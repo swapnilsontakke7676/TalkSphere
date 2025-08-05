@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-// We need to create this api.js file next if it doesn't exist
-// For now, we can comment out the lines that use it to avoid errors
-// import { registerUser } from '../services/api'; 
+import { registerUser } from '../services/api'; // This will now work
 import { toast } from 'react-toastify';
 
 const RegisterPage = () => {
@@ -15,15 +13,28 @@ const RegisterPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        toast.info("Registration feature coming soon!");
-        // try {
-        //     const { data } = await registerUser({ name, email, password });
-        //     login(data);
-        //     toast.success('Registered successfully!');
-        //     navigate('/chats');
-        // } catch (error) {
-        //     toast.error(error.response?.data?.message || 'Failed to register');
-        // }
+
+        // Basic validation
+        if (!name || !email || !password) {
+            return toast.error("Please fill out all fields.");
+        }
+
+        try {
+            // Call the API function to register the user
+            const { data } = await registerUser({ name, email, password });
+
+            // Use the login function from AuthContext to set the user state globally
+            login(data);
+
+            toast.success('Registered successfully!');
+
+            // Navigate to the main chat page on success
+            navigate('/chats');
+
+        } catch (error) {
+            // Display a specific error message from the backend if it exists
+            toast.error(error.response?.data?.message || 'Failed to register. Please try again.');
+        }
     };
 
     return (
