@@ -75,7 +75,7 @@ const LoginPage = () => {
                             placeholder="••••••••"
                         />
                     </div>
-                    
+
                     <div className="flex items-center">
                         <input
                             id="remember-me"
@@ -95,6 +95,21 @@ const LoginPage = () => {
                         >
                             Login
                         </button>
+                    </div>
+                    <div>
+                        <button
+                            type="submit"
+                            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out"
+                        >
+                            Forgot Password?
+                        </button>
+                    </div>
+
+                    <div className="text-center text-sm text-gray-600">
+                        Don't have an account?{' '}
+                        <a href="/register" className="font-medium text-green-600 hover:text-green-500">
+                            Sign up
+                        </a>
                     </div>
                 </form>
             </div>
