@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { registerUser } from '../services/api'; // This will now work
 import { toast } from 'react-toastify';
+import "../styles/register.css"; // Assuming you have a CSS file for styles
 
 const RegisterPage = () => {
     const [name, setName] = useState('');
@@ -38,27 +39,65 @@ const RegisterPage = () => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100">
-            <form onSubmit={handleSubmit} className="p-8 bg-white rounded shadow-md w-96">
-                <h2 className="text-2xl font-bold mb-6 text-center">Register for TalkSphere</h2>
-                <div className="mb-4">
-                    <label className="block text-gray-700">Name</label>
-                    <input type="text" placeholder="Your Name" value={name} onChange={(e) => setName(e.target.value)} required className="w-full px-3 py-2 border rounded" />
-                </div>
-                <div className="mb-4">
-                    <label className="block text-gray-700">Email</label>
-                    <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full px-3 py-2 border rounded" />
-                </div>
-                <div className="mb-6">
-                    <label className="block text-gray-700">Password</label>
-                    <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required className="w-full px-3 py-2 border rounded" />
-                </div>
-                <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">Register</button>
-                <p className="text-center mt-4">
-                    Already have an account? <a href="/login" className="text-blue-500 hover:underline">Login</a>
-                </p>
-            </form>
-        </div>
+        <>
+            <div class="min-h-screen">
+                <form class="register-form" onSubmit={handleSubmit}>
+                    <h2 class="page-title">Register for TalkSphere</h2>
+
+                    <div class="form-group">
+                        <label class="form-label" for="name">Name</label>
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            placeholder="Your Name"
+                            required
+                            class="form-input"
+                            onChange={(e) => setName(e.target.value)}
+                            value={name}
+                        />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Email"
+                            required
+                            class="form-input"
+                            onChange={(e) => setEmail(e.target.value)}
+                            value={email}
+                        />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="password">Password</label>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Password"
+                            required
+                            class="form-input"
+                            onChange={(e) => setPassword(e.target.value)}
+                            value={password}
+                        />
+                    </div>
+
+                    <button type="submit" class="register-btn">Register</button>
+
+                    <p class="login-link-container">
+                        Already have an account?
+                        <a href="/login" class="login-link">Login</a>
+                    </p>
+                </form>
+            </div>
+
+            <div id="toast" class="toast"></div>
+
+        </>
     );
 };
 
