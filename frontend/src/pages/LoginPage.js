@@ -36,78 +36,78 @@ const LoginPage = () => {
     };
 
     return (
-        <div class="min-h-screen">
-            <div class="login-container">
+        <div className="min-h-screen">
+            <div className="login-container">
 
-                <div class="logo-container">
-                    <div class="logo-icon">
+                <div className="logo-container">
+                    <div className="logo-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                         </svg>
                     </div>
-                    <span class="logo-text">TalkSphere</span>
+                    <span className="logo-text">TalkSphere</span>
                 </div>
 
-                <h2 class="page-title">Login</h2>
+                <h2 className="page-title">Login</h2>
 
-                <form class="form" onSubmit={handleSubmit}>
-                    <div class="form-group">
-                        <label for="email" class="form-label">Email</label>
+                <form className="form" onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label for="email" className="form-label">Email</label>
                         <input
                             id="email"
                             name="email"
                             type="email"
                             autocomplete="email"
                             required
-                            class="form-input"
+                            className="form-input"
                             placeholder="you@example.com"
                             onChange={(e) => setEmail(e.target.value)}
                             value={email}
                         />
                     </div>
 
-                    <div class="form-group">
-                        <label for="password" class="form-label">Password</label>
+                    <div className="form-group">
+                        <label for="password" className="form-label">Password</label>
                         <input
                             id="password"
                             name="password"
                             type="password"
                             autocomplete="current-password"
                             required
-                            class="form-input"
+                            className="form-input"
                             placeholder="••••••••"
                             onChange={(e) => setPassword(e.target.value)}
                             value={password}
                         />
                     </div>
 
-                    <div class="checkbox-container">
+                    <div className="checkbox-container">
                         <input
                             id="remember-me"
                             name="remember-me"
                             type="checkbox"
-                            class="checkbox"
+                            className="checkbox"
                         />
-                        <label for="remember-me" class="checkbox-label">
+                        <label for="remember-me" className="checkbox-label">
                             Remember me
                         </label>
                     </div>
 
                     <div>
-                        <button type="submit" class="btn">
+                        <button type="submit" className="btn">
                             Login
                         </button>
                     </div>
 
                     <div>
-                        <a href="/forgot-password" class="btn">
+                        <a href="/forgot-password" className="btn">
                             Forgot Password?
                         </a>
                     </div>
 
-                    <div class="signup-link-container">
+                    <div className="signup-link-container">
                         Don't have an account?
-                        <a href="/register" class="signup-link">
+                        <a href="/register" className="signup-link">
                             Sign up
                         </a>
                     </div>
