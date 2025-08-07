@@ -12,6 +12,7 @@ body {
     color: #1f2937;
 }
 
+/* Layout */
 .chat-container {
     display: flex;
     height: 100vh;
@@ -27,7 +28,7 @@ body {
     overflow-x: hidden;
 }
 
-/* Chat List Styles */
+/* Sidebar */
 .chat-list {
     width: 320px;
     min-width: 320px;
@@ -46,7 +47,7 @@ body {
 
 .chat-list-title {
     font-size: 1.25rem;
-    font-weight: 600;
+    font-weight: 700;
     color: #111827;
     margin-bottom: 0.5rem;
 }
@@ -54,20 +55,21 @@ body {
 .new-chat-btn {
     width: 100%;
     padding: 0.5rem 1rem;
-    background-color: #3b82f6;
+    background-color: #059669;
     color: white;
     border: none;
     border-radius: 0.375rem;
-    cursor: pointer;
     font-size: 0.875rem;
     font-weight: 500;
-    transition: background-color 0.2s;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
 }
 
 .new-chat-btn:hover {
-    background-color: #2563eb;
+    background-color: #047857;
 }
 
+/* Chat Items */
 .chat-items {
     flex: 1;
     overflow-y: auto;
@@ -77,10 +79,10 @@ body {
     padding: 1rem;
     border-bottom: 1px solid #e5e7eb;
     cursor: pointer;
-    transition: background-color 0.2s;
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    transition: background-color 0.2s ease-in-out;
 }
 
 .chat-item:hover {
@@ -88,8 +90,8 @@ body {
 }
 
 .chat-item.selected {
-    background-color: #dbeafe;
-    border-right: 3px solid #3b82f6;
+    background-color: #d1fae5;
+    border-right: 3px solid #059669;
 }
 
 .chat-avatar {
@@ -129,7 +131,7 @@ body {
     color: #9ca3af;
 }
 
-/* Chat Box Styles */
+/* Main Chat Area */
 .chat-box {
     flex: 1;
     display: flex;
@@ -170,6 +172,7 @@ body {
     color: #6b7280;
 }
 
+/* Messages */
 .chat-messages {
     flex: 1;
     padding: 1rem;
@@ -205,7 +208,7 @@ body {
 }
 
 .message.sent .message-avatar {
-    background-color: #3b82f6;
+    background-color: #059669;
 }
 
 .message-content {
@@ -213,13 +216,15 @@ body {
     padding: 0.75rem 1rem;
     border-radius: 1rem;
     flex: 1;
+    font-size: 0.875rem;
 }
 
 .message.sent .message-content {
-    background-color: #3b82f6;
+    background-color: #059669;
     color: white;
 }
 
+/* Input */
 .chat-input-container {
     padding: 1rem;
     border-top: 1px solid #e5e7eb;
@@ -240,28 +245,28 @@ body {
     outline: none;
     font-size: 0.875rem;
     background-color: white;
-    transition: border-color 0.2s;
+    transition: all 0.15s ease-in-out;
 }
 
 .chat-input:focus {
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    border-color: #059669;
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
 }
 
 .send-btn {
     padding: 0.75rem 1.5rem;
-    background-color: #3b82f6;
+    background-color: #059669;
     color: white;
     border: none;
     border-radius: 1.5rem;
     cursor: pointer;
     font-size: 0.875rem;
     font-weight: 500;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s ease-in-out;
 }
 
 .send-btn:hover {
-    background-color: #2563eb;
+    background-color: #047857;
 }
 
 .send-btn:disabled {
@@ -269,7 +274,7 @@ body {
     cursor: not-allowed;
 }
 
-/* Welcome state */
+/* Welcome */
 .welcome-state {
     flex: 1;
     display: flex;
@@ -292,7 +297,7 @@ body {
     margin-bottom: 1rem;
 }
 
-/* Logout Button */
+/* Logout */
 .logout-btn {
     position: absolute;
     top: 1rem;
@@ -305,7 +310,7 @@ body {
     cursor: pointer;
     font-size: 0.875rem;
     font-weight: 500;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s ease-in-out;
     z-index: 10;
 }
 
@@ -313,7 +318,7 @@ body {
     background-color: #dc2626;
 }
 
-/* Responsive Design */
+/* Responsive */
 @media (max-width: 768px) {
     .chat-list {
         width: 280px;
@@ -371,7 +376,7 @@ body {
         position: absolute;
         top: 1rem;
         left: 1rem;
-        background-color: #3b82f6;
+        background-color: #059669;
         color: white;
         border: none;
         border-radius: 0.375rem;
@@ -380,9 +385,7 @@ body {
         z-index: 25;
         display: none;
     }
-}
 
-@media (max-width: 640px) {
     .mobile-menu-btn {
         display: block;
     }
