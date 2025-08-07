@@ -76,7 +76,6 @@ const ChatPage = () => {
 
     return (
         <div className="chat-container">
-            Chatpage
             <div className="chat-layout">
                 <button 
                     className="mobile-menu-btn" 
