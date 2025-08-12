@@ -1,0 +1,226 @@
+.update-profile-page {
+    min-height: 100vh;
+    background-color: var(--bg-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    font-family: 'Google Sans', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+}
+
+.form-card {
+    background-color: var(--bg-primary);
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 12px var(--shadow-color);
+    padding: 2.5rem 2rem;
+    width: 100%;
+    max-width: 28rem;
+    border: 1px solid var(--border-primary);
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.form-header .icon-wrapper {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    background-color: var(--brand-primary);
+    color: var(--bg-primary);
+    border-radius: 50%;
+    margin-bottom: 1rem;
+}
+
+.form-header h1 {
+    font-size: 1.75rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.form-header h2 {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--text-secondary);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+    padding-left: 0.5rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.85rem 1.25rem;
+    background-color: var(--bg-tertiary);
+    border: 1px solid var(--border-primary);
+    border-radius: 2rem;
+    transition: all 0.2s ease-in-out;
+    outline: none;
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+.form-group input:focus {
+    background-color: var(--bg-brand-secondary);
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 0 2px var(--brand-primary);
+}
+
+.form-group input[disabled] {
+    background-color: var(--bg-secondary);
+    color: var(--text-secondary);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.password-toggle-btn {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+}
+
+.password-toggle-btn:hover {
+    color: var(--text-primary);
+}
+
+.image-upload {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.image-upload .image-preview-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.image-upload .image-preview {
+    width: 6rem;
+    height: 6rem;
+    border-radius: 50%;
+    background-color: var(--bg-tertiary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 2px dashed var(--border-primary);
+}
+
+.image-upload .image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-upload-label {
+    position: absolute;
+    bottom: 0rem;
+    right: 0rem;
+    background-color: var(--brand-primary);
+    color: var(--bg-primary);
+    border-radius: 50%;
+    padding: 0.6rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    border: 2px solid var(--bg-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-upload-label:hover {
+    background-color: var(--brand-primary-hover);
+}
+
+.image-upload input[type="file"] {
+    display: none;
+}
+
+.submit-btn {
+    width: 100%;
+    background-color: var(--brand-primary);
+    color: var(--bg-primary);
+    padding: 0.85rem 1.25rem;
+    border-radius: 2rem;
+    font-weight: 500;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.submit-btn:hover {
+    background-color: var(--brand-primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+.submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.message-banner {
+    margin-bottom: 1.5rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    border: 1px solid;
+    text-align: center;
+}
+
+.message-banner.error {
+    background-color: var(--bg-error);
+    color: var(--text-error);
+    border-color: var(--border-error);
+}
+
+.message-banner.success {
+    background-color: var(--bg-success);
+    color: var(--text-success);
+    border-color: var(--border-success);
+}
+
+.back-link-container {
+    margin-top: 1.5rem;
+    text-align: center;
+}
+
+.back-link-container button {
+    color: var(--brand-primary);
+    font-size: 0.875rem;
+    font-weight: 700;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.back-link-container button:hover {
+    color: var(--brand-primary-hover);
+    text-decoration: underline;
+}

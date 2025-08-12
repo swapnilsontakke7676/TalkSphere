@@ -1,13 +1,28 @@
-import React from 'react';
-import '../styles/settings.css'; // We'll create this CSS file next
-
-// Import icons (using a library like react-icons is recommended)
-// For this example, I'll use text placeholders like [i]
+import React, { useState } from 'react';
+import '../styles/settings.css';
 import { FaUserCircle, FaLock, FaCommentDots, FaBell, FaKeyboard, FaQuestionCircle, FaSignOutAlt } from 'react-icons/fa';
 import UpdateProfile from './UpdateProfile';
 
-
 const SettingsPage = ({ onLogout }) => {
+
+    const [activeView, setActiveView] = useState('default');
+
+    const renderContent = () => {
+        switch (activeView) {
+            case 'updateProfile':
+
+                return <UpdateProfile onBack={() => setActiveView('default')} />;
+
+            default:
+                return (
+                    <div className="settings-placeholder">
+                        <h2>Settings</h2>
+                        <p>Select an option from the menu to view or edit your settings.</p>
+                    </div>
+                );
+        }
+    };
+
     return (
         <div className="settings-container">
             <div className="settings-sidebar">
@@ -22,9 +37,11 @@ const SettingsPage = ({ onLogout }) => {
                     <input type="text" placeholder="Search settings" />
                 </div>
                 <ul className="settings-menu">
-                    <li onClick={UpdateProfile} className="update-profile">
+                    { }
+                    <li onClick={() => setActiveView('updateProfile')} className="update-profile">
                         <FaUserCircle /> Update Profile
                     </li>
+                    { }
                     <li><FaLock /> Privacy</li>
                     <li><FaCommentDots /> Chats</li>
                     <li><FaBell /> Notifications</li>
@@ -36,9 +53,8 @@ const SettingsPage = ({ onLogout }) => {
                 </ul>
             </div>
             <div className="settings-content">
-                <div className="settings-placeholder">
-                    <h2>Settings</h2>
-                </div>
+                { }
+                {renderContent()}
             </div>
         </div>
     );

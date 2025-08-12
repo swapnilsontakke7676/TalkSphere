@@ -101,7 +101,7 @@
     background-position: center 35%;
 }
 
-.settings-content  h2 {
+.settings-content h2 {
     font-size: 2rem;
     font-weight: 400;
     color: var(--text-primary);
@@ -109,6 +109,6 @@
     margin-bottom: 0.5rem;
 }
 
-.settings-content  p {
+.settings-content p {
     max-width: 350px;
 }
