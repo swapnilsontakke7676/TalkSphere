@@ -12,8 +12,9 @@ export const AuthProvider = ({ children }) => {
         if (userInfo) {
             setUser(userInfo);
         } else {
-            // If no user info in storage, and we are not on login/register page, navigate to login
-            if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
+            // Allow these public routes without redirect
+            const publicRoutes = ['/login', '/register', '/forgot-password'];
+            if (!publicRoutes.includes(window.location.pathname)) {
                 navigate('/login');
             }
         }

@@ -39,6 +39,7 @@ const server = app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
 
+
 // Socket.IO setup (we will configure this in socket.js later)
 const io = require('socket.io')(server, {
     pingTimeout: 60000,

@@ -14,10 +14,13 @@ API.interceptors.request.use((req) => {
   return req;
 });
 
-
+//  http://localhost:5000/api/user/forgot-password
 // --- Authentication Endpoints ---
 export const registerUser = (formData) => API.post('/api/user/register', formData);
 export const loginUser = (formData) => API.post('/api/user/login', formData);
+export const forgotUser = (formData) => API.post('/api/user/forgot-password', formData);
+export const verifyUser = (formData) => API.post('/api/user/verify-reset-otp', formData);
+export const resetUser = (formData) => API.post('/api/user/reset-password', formData);
 
 
 // --- Message Endpoints (NEWLY ADDED) ---
