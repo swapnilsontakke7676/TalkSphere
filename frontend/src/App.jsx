@@ -7,6 +7,7 @@ import { useAuth } from "./context/AuthContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ForgotPassword from "./pages/ForgotPassword";
+import UpdateProfile from "./components/UpdateProfile";
 
 function App() {
   const { user } = useAuth();
@@ -26,7 +27,6 @@ function App() {
           path="/forgot-password"
           element={!user ? <ForgotPassword /> : <Navigate to="/chats" />}
         />
-
 
         <Route
           path="/chats"

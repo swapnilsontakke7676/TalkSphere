@@ -4,6 +4,7 @@ import '../styles/settings.css'; // We'll create this CSS file next
 // Import icons (using a library like react-icons is recommended)
 // For this example, I'll use text placeholders like [i]
 import { FaUserCircle, FaLock, FaCommentDots, FaBell, FaKeyboard, FaQuestionCircle, FaSignOutAlt } from 'react-icons/fa';
+import UpdateProfile from './UpdateProfile';
 
 
 const SettingsPage = ({ onLogout }) => {
@@ -21,7 +22,9 @@ const SettingsPage = ({ onLogout }) => {
                     <input type="text" placeholder="Search settings" />
                 </div>
                 <ul className="settings-menu">
-                    <li><FaUserCircle /> Account</li>
+                    <li onClick={UpdateProfile} className="update-profile">
+                        <FaUserCircle /> Update Profile
+                    </li>
                     <li><FaLock /> Privacy</li>
                     <li><FaCommentDots /> Chats</li>
                     <li><FaBell /> Notifications</li>
