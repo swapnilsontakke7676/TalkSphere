@@ -1,18 +1,17 @@
 import axios from 'axios';
 
 // Create an Axios instance with the base URL from your environment variables.
-const API = axios.create({ baseURL: process.env.REACT_APP_API_URL });
-
+const API = axios.create({ baseURL: import.meta.env.VITE_API_URL });
 /*
   This is a 'request interceptor'. It will attach the user's JWT token 
   to the headers of every request if the user is logged in. 
   This is crucial for protected routes.
 */
 API.interceptors.request.use((req) => {
-    if (localStorage.getItem('userInfo')) {
-        req.headers.Authorization = `Bearer ${JSON.parse(localStorage.getItem('userInfo')).token}`;
-    }
-    return req;
+  if (localStorage.getItem('userInfo')) {
+    req.headers.Authorization = `Bearer ${JSON.parse(localStorage.getItem('userInfo')).token}`;
+  }
+  return req;
 });
 
 

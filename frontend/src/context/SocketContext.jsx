@@ -12,7 +12,7 @@ export const SocketProvider = ({ children }) => {
 
     useEffect(() => {
         if (user) {
-            const newSocket = io(process.env.REACT_APP_API_URL);
+            const newSocket = io(import.meta.env.VITE_API_URL);
             setSocket(newSocket);
 
             // Add user to socket server
