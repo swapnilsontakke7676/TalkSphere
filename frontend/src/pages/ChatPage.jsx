@@ -69,7 +69,6 @@ const ChatPage = () => {
     return (
         <div className="chat-container">
             <div className="chat-layout">
-                <button className="mobile-menu-btn" onClick={toggleMobileMenu}>☰</button>
 
                 <div className={`${isMobileMenuOpen ? 'mobile-open' : ''}`}>
                     <ChatList
