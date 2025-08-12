@@ -2,41 +2,54 @@ import React from 'react';
 import { IoChatbubblesSharp, IoSparklesSharp, IoPersonCircleSharp, IoSettingsSharp, IoLogoReact, IoSunny, IoMoon } from "react-icons/io5";
 import { useTheme } from '../context/ThemeContext';
 
-const NavBar = () => {
+const NavBar = ({ currentView, onNavigate }) => {
   const { theme, toggleTheme } = useTheme();
 
   return (
     <nav className="main-nav">
-      <a href="#logo" className="nav-logo">
+      <div className="nav-logo" onClick={() => onNavigate('chats')}>
         <IoLogoReact size={32} />
-      </a>
+      </div>
       <ul className="nav-list">
         <li>
-          <a href="#chats" className="nav-item active">
+          <div
+            className={`nav-item ${currentView === 'chats' ? 'active' : ''}`}
+            onClick={() => onNavigate('chats')}
+          >
             <IoChatbubblesSharp size={24} />
             <span>Chats</span>
-          </a>
+          </div>
         </li>
-        <li>
-          <a href="#ai" className="nav-item">
+        {/* <li>
+          <div
+            className={`nav-item ${currentView === 'ai' ? 'active' : ''}`}
+            onClick={() => alert('AI page not implemented yet!')}
+          >
             <IoSparklesSharp size={24} />
             <span>AI</span>
-          </a>
-        </li>
+          </div>
+        </li> */}
         <li>
-          <a href="#profile" className="nav-item">
+          {/* --- THIS IS THE CHANGE --- */}
+          <div
+            className={`nav-item ${currentView === 'profile' ? 'active' : ''}`}
+            onClick={() => onNavigate('profile')} /* Changed from alert to navigate */
+          >
             <IoPersonCircleSharp size={24} />
             <span>Profile</span>
-          </a>
+          </div>
         </li>
       </ul>
       <div className="nav-footer">
         <button onClick={toggleTheme} className="theme-toggle">
           {theme === 'light' ? <IoMoon size={22} /> : <IoSunny size={22} />}
         </button>
-        <a href="#settings" className="nav-item">
+        <div
+          className={`nav-item ${currentView === 'settings' ? 'active' : ''}`}
+          onClick={() => onNavigate('settings')}
+        >
           <IoSettingsSharp size={24} />
-        </a>
+        </div>
       </div>
     </nav>
   );

@@ -1,0 +1,81 @@
+.profile-page-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background-color: var(--bg-secondary);
+}
+
+.profile-sidebar {
+    width: 30%;
+    padding: 20px;
+    background-color: var(--bg-primary);
+    border-right: 1px solid var(--border-primary);
+    display: flex;
+    flex-direction: column;
+    /* Use variable for primary text color */
+    color: var(--text-primary);
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+    color: var(--text-color-primary);
+}
+
+.profile-header .back-button {
+    background: none;
+    border: none;
+    color: var(--text-color-primary);
+    cursor: pointer;
+    margin-right: 20px;
+}
+
+.profile-picture-section {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 40px;
+}
+
+.profile-avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile-info-section .info-item {
+    margin-bottom: 25px;
+}
+
+.profile-info-section label {
+    font-size: 0.8rem;
+    color: var(--accent-color);
+    margin-bottom: 10px;
+    display: block;
+}
+
+.profile-info-section .info-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--text-color-primary);
+    font-size: 1rem;
+}
+
+.profile-info-section .edit-icon {
+    cursor: pointer;
+    color: var(--text-color-secondary);
+}
+
+.profile-info-section .info-helper {
+    font-size: 0.75rem;
+    color: var(--text-color-secondary);
+    margin-top: 10px;
+}
+
+/* This is the empty space on the right */
+.profile-main-content {
+    flex-grow: 1;
+    /* You can style this area if you want something other than the background */
+}

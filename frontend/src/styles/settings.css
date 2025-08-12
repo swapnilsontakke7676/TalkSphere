@@ -1,0 +1,114 @@
+/* --- settings.css --- */
+
+.settings-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    /* Use variables for background colors */
+    background-color: var(--bg-secondary);
+}
+
+.settings-sidebar {
+    width: 30%;
+    max-width: 400px;
+    /* Use variables for sidebar colors */
+    background-color: var(--bg-primary);
+    border-right: 1px solid var(--border-primary);
+    display: flex;
+    flex-direction: column;
+    /* Use variable for primary text color */
+    color: var(--text-primary);
+}
+
+.settings-profile {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    gap: 15px;
+}
+
+.settings-profile-info h4 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.settings-profile-info p {
+    margin: 0;
+    font-size: 0.8rem;
+    /* Use variable for secondary text color */
+    color: var(--text-secondary);
+}
+
+.settings-search {
+    padding: 8px 16px;
+    /* This container should match the sidebar background */
+    background-color: var(--bg-primary);
+}
+
+.settings-search input {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: none;
+    /* Use tertiary background for input fields */
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    outline: none;
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+.settings-search input:focus {
+    box-shadow: 0 0 0 2px var(--brand-primary);
+}
+
+.settings-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1;
+}
+
+.settings-menu li {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 16px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: background-color 0.2s ease;
+}
+
+.settings-menu li:hover {
+    /* Use a consistent background for hover effects */
+    background-color: var(--bg-tertiary);
+}
+
+.logout-option {
+    /* Note: This color doesn't have a variable yet. See below. */
+    color: #e04f5f;
+}
+
+.settings-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: var(--text-secondary);
+    background-image: var(--settings-icon-url);
+    background-repeat: no-repeat;
+    background-position: center 35%;
+}
+
+.settings-content  h2 {
+    font-size: 2rem;
+    font-weight: 400;
+    color: var(--text-primary);
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.settings-content  p {
+    max-width: 350px;
+}
