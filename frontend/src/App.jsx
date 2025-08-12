@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ChatPage from "./pages/ChatPage";
+import { ThemeProvider } from './context/ThemeContext'; // Import the provider
 import { useAuth } from "./context/AuthContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -25,11 +26,15 @@ function App() {
           path="/forgot-password"
           element={!user ? <ForgotPassword /> : <Navigate to="/chats" />}
         />
-        
+
 
         <Route
           path="/chats"
-          element={user ? <ChatPage /> : <Navigate to="/login" />}
+          element={user ?
+            <ThemeProvider>
+              <ChatPage />
+            </ThemeProvider>
+            : <Navigate to="/login" />}
         />
         <Route path="/" element={<Navigate to="/login" />} />
       </Routes>

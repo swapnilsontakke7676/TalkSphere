@@ -4,11 +4,18 @@ import "../styles/chat.css";
 
 import ChatList from '../components/ChatList';
 import ChatBox from '../components/ChatBox';
+import NavBar from '../components/NavBar';
 
 const ChatPage = () => {
     const [selectedChat, setSelectedChat] = useState(null);
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [messageInput, setMessageInput] = useState('');
+
+    const [chats] = useState({
+        user1: { name: 'John Doe', avatar: 'JD', status: 'Online', preview: 'Hey, how are you doing?', time: '2m' },
+        user2: { name: 'Sarah Miller', avatar: 'SM', status: 'last seen today at 1:25 PM', preview: 'Thanks for your help!', time: '5m' },
+        user3: { name: 'Mike Johnson', avatar: 'MJ', status: 'Offline', preview: 'See you tomorrow', time: '1h' }
+    });
+
     const [messages, setMessages] = useState({
         user1: [
             { id: 1, sender: 'JD', content: 'Hey, how are you doing?', sent: false },
@@ -25,20 +32,14 @@ const ChatPage = () => {
 
     const { user, logout } = useAuth();
 
-    const chats = {
-        user1: { name: 'John Doe', avatar: 'JD', status: 'Online', preview: 'Hey, how are you doing?', time: '2m' },
-        user2: { name: 'Sarah Miller', avatar: 'SM', status: 'Away', preview: 'Thanks for your help!', time: '5m' },
-        user3: { name: 'Mike Johnson', avatar: 'MJ', status: 'Offline', preview: 'See you tomorrow', time: '1h' }
+    const handleLogout = () => {
+        if (window.confirm('Are you sure you want to logout?')) logout();
     };
 
-    const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
-    const closeMobileMenu = () => setIsMobileMenuOpen(false);
-    const selectChat = (chatId) => {
-        setSelectedChat(chatId);
-        closeMobileMenu();
-    };
-
-    const startNewChat = () => alert('New chat functionality would be implemented here');
+    // --- Handlers ---
+    const selectChat = (chatId) => setSelectedChat(chatId);
+    const handleBack = () => setSelectedChat(null);
+    const startNewChat = () => alert('New chat!');
 
     const sendMessage = (e) => {
         e.preventDefault();
@@ -59,38 +60,32 @@ const ChatPage = () => {
         setMessageInput('');
     };
 
-    const handleLogout = () => {
-        if (window.confirm('Are you sure you want to logout?')) logout();
-    };
-
     const currentChat = selectedChat ? chats[selectedChat] : null;
     const currentMessages = selectedChat ? messages[selectedChat] || [] : [];
 
     return (
         <div className="chat-container">
-            <div className="chat-layout">
+            <NavBar />
 
-                <div className={`${isMobileMenuOpen ? 'mobile-open' : ''}`}>
-                    <ChatList
-                        chats={chats}
-                        selectedChat={selectedChat}
-                        selectChat={selectChat}
-                        startNewChat={startNewChat}
-                    />
-                </div>
-
+            <div className={`chat-layout ${selectedChat ? 'view-chat' : ''}`}>
+                <ChatList
+                    chats={chats}
+                    selectedChat={selectedChat}
+                    selectChat={selectChat}
+                    startNewChat={startNewChat}
+                />
                 <ChatBox
                     currentChat={currentChat}
                     currentMessages={currentMessages}
                     messageInput={messageInput}
                     setMessageInput={setMessageInput}
                     sendMessage={sendMessage}
+                    handleBack={handleBack}
                 />
             </div>
-
-            <button className="logout-btn" onClick={handleLogout}>Logout</button>
-
-            <div className={`mobile-overlay ${isMobileMenuOpen ? 'active' : ''}`} onClick={closeMobileMenu}></div>
+            <footer>
+                <button onClick={handleLogout}>Logout</button>
+            </footer>
         </div>
     );
 };
