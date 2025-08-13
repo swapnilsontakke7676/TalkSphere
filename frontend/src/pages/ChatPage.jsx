@@ -3,8 +3,8 @@ import { useAuth } from '../context/AuthContext';
 import "../styles/chat.css";
 
 // Import the new ProfilePage component
-import ProfilePage from '../components/ProfilePage';
-import SettingsPage from '../components/SettingsPage';
+import ProfilePage from './ProfilePage';
+import SettingsPage from './SettingsPage';
 import ChatList from '../components/ChatList';
 import ChatBox from '../components/ChatBox';
 import NavBar from '../components/NavBar';

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../styles/settings.css';
 import { FaUserCircle, FaLock, FaCommentDots, FaBell, FaKeyboard, FaQuestionCircle, FaSignOutAlt } from 'react-icons/fa';
-import UpdateProfile from './UpdateProfile';
+import UpdateProfile from '../components/UpdateProfile';
 
 const SettingsPage = ({ onLogout }) => {
 
