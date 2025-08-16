@@ -23,6 +23,7 @@ export const verifyUser = (formData) => API.post('/api/user/verify-reset-otp', f
 export const resetUser = (formData) => API.post('/api/user/reset-password', formData);
 export const fetchChats = () => API.get('/api/chat');
 export const accessChat = (userId) => API.post('/api/chat', { userId });
+export const createGroupChat = (chatData) => API.post('/api/chat/group', chatData);
 
 // --- User Search Endpoint ---
 export const searchUsers = (searchQuery) => API.get(`/api/user?search=${searchQuery}`);

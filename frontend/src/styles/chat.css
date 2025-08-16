@@ -512,6 +512,47 @@ body {
     /* Handle color on hover */
 }
 
+/* Add these styles for ChatList */
+.chat-list-header.with-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.new-group-button {
+    background: none;
+    border: 1px solid var(--border-primary);
+    color: var(--text-secondary);
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.new-group-button:hover {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.chat-search .search-button {
+    width: 100%;
+    text-align: left;
+    padding: 0.75rem 1rem;
+    border-radius: 2rem;
+    border: none;
+    background-color: var(--bg-tertiary);
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.chat-search .search-button:hover {
+    background-color: var(--border-primary);
+}
+
 @media (max-width: 768px) {
 
     .main-nav {
