@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../styles/settings.css';
 import { FaUserCircle, FaLock, FaCommentDots, FaBell, FaKeyboard, FaQuestionCircle, FaSignOutAlt } from 'react-icons/fa';
-import UpdateProfile from '../components/UpdateProfile';
+// import UpdateProfile from '../components/UpdateProfile';
 
 const SettingsPage = ({ onLogout }) => {
 
@@ -11,7 +11,7 @@ const SettingsPage = ({ onLogout }) => {
         switch (activeView) {
             case 'updateProfile':
 
-                return <UpdateProfile onBack={() => setActiveView('default')} />;
+                // return <UpdateProfile onBack={() => setActiveView('default')} />;
 
             default:
                 return (
