@@ -21,7 +21,7 @@ const ChatPage = () => {
     const [loading, setLoading] = useState(false);
     const [messageInput, setMessageInput] = useState('');
     const [isDrawerOpen, setDrawerOpen] = useState(false);
-    const [currentView, setCurrentView] = useState('chats');
+    const [currentView, setCurrentView] = useState({ view: 'chats', section: null });
 
     const socket = useSocket();
 
@@ -143,7 +143,9 @@ const ChatPage = () => {
     // Helper functions
     const toggleDrawer = () => setDrawerOpen(!isDrawerOpen);
     const handleBack = () => setSelectedChat(null);
-    const handleNavigate = (view) => setCurrentView(view);
+    const handleNavigate = (view, section = null) => {
+        setCurrentView({ view, section });
+    };
 
     // Logout confirmation popup state
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -160,7 +162,7 @@ const ChatPage = () => {
             <NavBar currentView={currentView} onNavigate={handleNavigate} />
             <SideDrawer isOpen={isDrawerOpen} onClose={toggleDrawer} />
 
-            {currentView === 'chats' && (
+            {currentView.view === 'chats' ? (
                 <div className={`chat-layout ${selectedChat ? 'view-chat' : ''}`}>
                     <ChatList startNewChat={toggleDrawer} />
                     <ChatBox
@@ -175,14 +177,14 @@ const ChatPage = () => {
                         handleTyping={handleTyping}
                     />
                 </div>
-            )}
-
-            {currentView === 'settings' && (
+            ) : (
+                // Render the new SettingsPage when view is 'settings'
                 <SettingsPage
+                    initialSection={currentView.section}
+                    onBack={() => handleNavigate('chats')}
                     onLogout={handleLogoutClick}
                 />
             )}
-            {currentView === 'profile' && <ProfilePage user={user} onBack={() => handleNavigate('chats')} />}
 
             {showLogoutConfirm && (
                 <div className="logout-confirm-overlay">

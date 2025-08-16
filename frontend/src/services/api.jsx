@@ -34,6 +34,9 @@ export const removeUserFromGroup = (chatId, userId) => API.put('/api/chat/groupr
 // --- User Search Endpoint ---
 export const searchUsers = (searchQuery) => API.get(`/api/user?search=${searchQuery}`);
 
+// --- User Profile Endpoint ---
+export const updateUser = (userId, userData) => API.put(`/api/user/profile`, userData);
+
 // --- Message Endpoints (NEWLY ADDED) ---
 
 /**

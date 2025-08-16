@@ -216,6 +216,37 @@ const resetPassword = async (req, res) => {
   res.status(200).json({ message: "Password reset successful" });
 };
 
+// @desc    Update user profile
+// @route   PUT /api/user/profile
+// @access  Protected
+const updateUserProfile = async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  if (user) {
+    user.name = req.body.name || user.name;
+    user.profilePic = req.body.profilePic || user.profilePic;
+
+    if (req.body.password) {
+      user.password = req.body.password;
+    }
+
+    const updatedUser = await user.save();
+
+    res.json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      username: updatedUser.username,
+      profilePic: updatedUser.profilePic,
+      token: generateToken(updatedUser._id, updatedUser.username),
+    });
+  } else {
+    res.status(404);
+    throw new Error("User not found");
+  }
+};
+
+
 module.exports = {
   registerUser,
   loginUser,
@@ -223,4 +254,5 @@ module.exports = {
   verifyOtp,
   resetPassword,
   allUsers,
+  updateUserProfile,
 };

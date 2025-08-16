@@ -1,138 +1,266 @@
-/* --- settings.css --- */
-
-.settings-container {
+/* frontend/src/styles/settings.css - FINAL VERSION */
+.settings-page {
     display: flex;
-    width: 100%;
     height: 100%;
-    /* Use variables for background colors */
+    width: 100%;
     background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    position: relative;
+    overflow: hidden;
 }
 
 .settings-sidebar {
-    width: 30%;
-    max-width: 400px;
-    /* Use variables for sidebar colors */
+    width: 280px;
+    min-width: 240px;
     background-color: var(--bg-primary);
-    border-right: 1px solid var(--border-primary);
+    padding: 2rem 0.5rem 1rem 1.5rem;
     display: flex;
     flex-direction: column;
-    /* Use variable for primary text color */
-    color: var(--text-primary);
+    border-right: 1px solid var(--border-primary);
+    transition: transform 0.3s ease-in-out;
 }
 
-.settings-profile {
-    display: flex;
-    align-items: center;
-    padding: 16px;
-    gap: 15px;
+.settings-content {
+    flex: 1;
+    padding: 2rem 3rem;
+    overflow-y: auto;
+    transition: transform 0.3s ease-in-out;
 }
 
-.settings-profile-info h4 {
-    margin: 0;
-    font-size: 1rem;
-}
-
-.settings-profile-info p {
-    margin: 0;
-    font-size: 0.8rem;
-    /* Use variable for secondary text color */
-    color: var(--text-secondary);
-}
-
-.settings-search {
-    padding: 8px 16px;
-    /* This container should match the sidebar background */
-    background-color: var(--bg-primary);
-}
-
-.settings-search input {
-    width: 100%;
-    padding: 8px 12px;
-    border-radius: 8px;
-    border: none;
-    /* Use tertiary background for input fields */
-    background-color: var(--bg-tertiary);
-    color: var(--text-primary);
-    outline: none;
-    transition: box-shadow 0.2s ease-in-out;
-}
-
-.settings-search input:focus {
-    box-shadow: 0 0 0 2px var(--brand-primary);
-}
-
-.settings-menu {
+/* ... (keep all the other styles from the previous step for buttons, forms, etc.) ... */
+.settings-nav {
     list-style: none;
     padding: 0;
     margin: 0;
     flex-grow: 1;
 }
 
-.settings-menu li {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    padding: 16px;
-    cursor: pointer;
-    font-size: 0.95rem;
-    transition: background-color 0.2s ease;
-}
-
-.settings-menu li:hover {
-    /* Use a consistent background for hover effects */
-    background-color: var(--bg-tertiary);
-}
-
-.logout-option {
-    /* Note: This color doesn't have a variable yet. See below. */
-    color: #e04f5f;
-}
-
-.settings-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+.nav-header {
+    padding: 0 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
     color: var(--text-secondary);
-    background-image: var(--settings-icon-url);
-    background-repeat: no-repeat;
-    background-position: center 35%;
-}
-
-.settings-content h2 {
-    font-size: 2rem;
-    font-weight: 400;
-    color: var(--text-primary);
-    margin-top: 2rem;
+    text-transform: uppercase;
     margin-bottom: 0.5rem;
 }
 
-.settings-content p {
-    max-width: 350px;
+.settings-nav li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* Responsive adjustments for Settings Page */
-@media (max-width: 768px) {
-    .settings-container {
-        flex-direction: column;
-    }
+.settings-nav li:hover {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+}
 
+.settings-nav li.active {
+    background-color: var(--bg-brand-secondary);
+    color: var(--text-on-brand);
+}
+
+.nav-divider {
+    height: 1px;
+    background-color: var(--border-primary);
+    margin: 0.5rem 0.75rem;
+}
+
+.back-button-wrapper {
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-primary);
+}
+
+.back-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 0.5rem;
+}
+
+.back-button:hover {
+    color: var(--text-primary);
+}
+
+.settings-content-main h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.account-card {
+    background-color: var(--bg-primary);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.account-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background-color: var(--bg-tertiary);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.avatar-uploader {
+    position: relative;
+}
+
+.large-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.avatar-edit-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0,0,0,0.6);
+    color: white;
+    text-align: center;
+    font-size: 0.75rem;
+    padding: 0.25rem 0;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    border-bottom-left-radius: 40px;
+    border-bottom-right-radius: 40px;
+}
+
+.avatar-uploader:hover .avatar-edit-label {
+    opacity: 1;
+}
+
+#avatar-upload {
+    display: none;
+}
+
+.user-info-display .display-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    display: block;
+}
+
+.user-info-display .username {
+    color: var(--text-secondary);
+}
+
+.account-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.account-form label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+}
+
+.account-form input {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 4px;
+    border: 1px solid var(--border-primary);
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+.account-form input:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.save-button {
+    background-color: var(--brand-primary);
+    color: var(--bg-primary);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.save-button:hover {
+    background-color: var(--brand-primary-hover);
+}
+
+.save-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+.mobile-back-button {
+    display: none; /* Hidden by default */
+}
+
+
+/* NEW Mobile Responsive Styles for Slide-Over Effect */
+@media (max-width: 900px) {
     .settings-sidebar {
+        position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
-        max-width: none;
+        height: 100%;
+        transform: translateX(0);
         border-right: none;
-        border-bottom: 1px solid var(--border-primary);
+        z-index: 2; /* Sidebar on top by default */
     }
 
     .settings-content {
-        /* Adjust background for smaller screens if needed */
-        background-position: center 20%;
-        padding: 2rem 1rem;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        transform: translateX(100%);
+        padding: 1.5rem;
+        z-index: 1;
     }
 
-    .settings-content h2 {
-        font-size: 1.5rem;
+    .settings-page.mobile-content-view .settings-sidebar {
+        transform: translateX(-100%);
+    }
+
+    .settings-page.mobile-content-view .settings-content {
+        transform: translateX(0);
+        z-index: 3; /* Content on top when active */
+    }
+
+    .back-button-wrapper {
+        display: none; /* Hide the desktop back button on mobile */
+    }
+
+    .mobile-back-button {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        font-size: 1rem;
+        font-weight: 500;
+        padding: 0;
+        margin-bottom: 1.5rem;
+        cursor: pointer;
     }
 }
