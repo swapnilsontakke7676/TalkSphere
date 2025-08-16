@@ -62,6 +62,7 @@ const registerUser = async (req, res) => {
       email: user.email,
       username: user.username,
       profilePic: user.profilePic,
+      role: user.role, // Add this line
       token: generateToken(user._id, user.username),
     });
   } else {
@@ -83,7 +84,8 @@ const loginUser = async (req, res) => {
       email: user.email,
       username: user.username,
       profilePic: user.profilePic,
-      token: generateToken(user._id, user.username), // updated
+      role: user.role, // Add this line
+      token: generateToken(user._id, user.username),
     });
   } else {
     res.status(401).json({ message: "Invalid email or password" });
@@ -262,6 +264,45 @@ const updateUserPassword = async (req, res) => {
   }
 };
 
+// @desc    Delete a user
+// @route   DELETE /api/user/admin/users/:id
+// @access  Private/Admin
+const deleteUser = async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  if (user) {
+    await user.remove();
+    res.json({ message: 'User removed' });
+  } else {
+    res.status(404).json({ message: 'User not found' });
+  }
+};
+
+// @desc    Update user role
+// @route   PUT /api/user/admin/users/:id
+// @access  Private/Admin
+const updateUserRole = async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  if (user) {
+    user.role = req.body.role || user.role;
+    const updatedUser = await user.save();
+    res.json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      username: updatedUser.username,
+      role: updatedUser.role,
+    });
+  } else {
+    res.status(404).json({ message: 'User not found' });
+  }
+};
+
+const getUsers = async (req, res) => {
+  const users = await User.find({});
+  res.json(users);
+};
 
 module.exports = {
   registerUser,
@@ -271,5 +312,8 @@ module.exports = {
   resetPassword,
   allUsers,
   updateUserProfile,
-  updateUserPassword
+  updateUserPassword,
+  getUsers,
+  deleteUser,
+  updateUserRole,
 };

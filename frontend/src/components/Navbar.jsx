@@ -1,44 +1,62 @@
+// frontend/src/components/NavBar.jsx
 import React from 'react';
-import { IoChatbubblesSharp, IoPersonCircleSharp, IoSettingsSharp, IoLogoReact, IoSunny, IoMoon } from "react-icons/io5";
+import { useNavigate, useLocation } from 'react-router-dom';
+import { IoChatbubblesSharp, IoPersonCircleSharp, IoSettingsSharp, IoLogoReact, IoSunny, IoMoon, IoShieldCheckmarkSharp } from "react-icons/io5";
 import { useTheme } from '../context/ThemeContext';
+import { useAuth } from '../context/AuthContext';
 
-const NavBar = ({ currentView, onNavigate }) => {
+const NavBar = () => {
   const { theme, toggleTheme } = useTheme();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   return (
-    <nav className="main-nav">
-      <div className="nav-logo" onClick={() => onNavigate('chats')}>
+    <nav className="main-nav" >
+      <div className="nav-logo" onClick={() => navigate('/chats')}>
         <IoLogoReact size={32} />
       </div>
-      <ul className="nav-list">
+      < ul className="nav-list" >
         <li>
           <div
-            className={`nav-item ${currentView.view === 'chats' ? 'active' : ''}`}
-            onClick={() => onNavigate('chats')}
+            className={`nav-item ${location.pathname === '/chats' ? 'active' : ''}`}
+            onClick={() => navigate('/chats')}
           >
             <IoChatbubblesSharp size={24} />
-            <span>Chats</span>
+            < span > Chats </span>
           </div>
         </li>
         <li>
-          {/* This is now active ONLY when the section is 'account' */}
+          {/* This now navigates to settings and is active on the /settings route */}
           <div
-            className={`nav-item ${currentView.view === 'settings' && currentView.section === 'account' ? 'active' : ''}`}
-            onClick={() => onNavigate('settings', 'account')}
+            className={`nav-item ${location.pathname === '/settings' ? 'active' : ''}`}
+            onClick={() => navigate('/settings')}
           >
             <IoPersonCircleSharp size={24} />
-            <span>Profile</span>
+            < span > Profile </span>
           </div>
         </li>
+        {
+          user && user.role === 'admin' && (
+            <li>
+              <div
+                className={`nav-item ${location.pathname === '/admin' ? 'active' : ''}`}
+                onClick={() => navigate('/admin')
+                }
+              >
+                <IoShieldCheckmarkSharp size={24} />
+                < span > Admin </span>
+              </div>
+            </li>
+          )}
       </ul>
-      <div className="nav-footer">
-        <button onClick={toggleTheme} className="theme-toggle">
+      < div className="nav-footer" >
+        <button onClick={toggleTheme} className="theme-toggle" >
           {theme === 'light' ? <IoMoon size={22} /> : <IoSunny size={22} />}
         </button>
-        {/* This is now active when the section is NOT 'account' */}
-        <div
-          className={`nav-item ${currentView.view === 'settings' && currentView.section !== 'account' ? 'active' : ''}`}
-          onClick={() => onNavigate('settings')}
+        < div
+          className={`nav-item ${location.pathname === '/settings' ? 'active' : ''}`}
+          onClick={() => navigate('/settings')}
         >
           <IoSettingsSharp size={24} />
         </div>

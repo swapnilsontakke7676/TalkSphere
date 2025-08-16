@@ -9,19 +9,17 @@ import "../styles/chat.css";
 import ChatList from '../components/ChatList';
 import ChatBox from '../components/ChatBox';
 import SideDrawer from '../components/SideDrawer';
-import NavBar from '../components/NavBar';
-import SettingsPage from './SettingsPage'; // Assuming these are used
-import ProfilePage from './ProfilePage'; // Assuming these are used
+// NavBar is no longer needed here
+// SettingsPage and ProfilePage are no longer needed here
 
 const ChatPage = () => {
     const { user, logout } = useAuth();
-    const { selectedChat, setSelectedChat, chats, setChats } = useChat(); // Use context state
+    const { selectedChat, setSelectedChat, chats, setChats } = useChat();
 
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
     const [messageInput, setMessageInput] = useState('');
     const [isDrawerOpen, setDrawerOpen] = useState(false);
-    const [currentView, setCurrentView] = useState({ view: 'chats', section: null });
 
     const socket = useSocket();
 
@@ -147,9 +145,8 @@ const ChatPage = () => {
         setCurrentView({ view, section });
     };
 
-    // Logout confirmation popup state
+    // Logout confirmation logic remains the same
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-
     const handleLogoutClick = () => setShowLogoutConfirm(true);
     const handleLogoutConfirm = () => {
         setShowLogoutConfirm(false);
@@ -158,33 +155,23 @@ const ChatPage = () => {
     const handleLogoutCancel = () => setShowLogoutConfirm(false);
 
     return (
-        <div className="chat-container">
-            <NavBar currentView={currentView} onNavigate={handleNavigate} />
+        <>
             <SideDrawer isOpen={isDrawerOpen} onClose={toggleDrawer} />
 
-            {currentView.view === 'chats' ? (
-                <div className={`chat-layout ${selectedChat ? 'view-chat' : ''}`}>
-                    <ChatList startNewChat={toggleDrawer} />
-                    <ChatBox
-                        currentChat={selectedChat}
-                        currentMessages={messages}
-                        messageInput={messageInput}
-                        setMessageInput={setMessageInput}
-                        sendMessage={sendMessage}
-                        handleBack={handleBack}
-                        loading={loading}
-                        isTyping={isTyping}
-                        handleTyping={handleTyping}
-                    />
-                </div>
-            ) : (
-                // Render the new SettingsPage when view is 'settings'
-                <SettingsPage
-                    initialSection={currentView.section}
-                    onBack={() => handleNavigate('chats')}
-                    onLogout={handleLogoutClick}
+            <div className={`chat-layout ${selectedChat ? 'view-chat' : ''}`}>
+                <ChatList startNewChat={toggleDrawer} />
+                <ChatBox
+                    currentChat={selectedChat}
+                    currentMessages={messages}
+                    messageInput={messageInput}
+                    setMessageInput={setMessageInput}
+                    sendMessage={sendMessage}
+                    handleBack={handleBack}
+                    loading={loading}
+                    isTyping={isTyping}
+                    handleTyping={handleTyping}
                 />
-            )}
+            </div>
 
             {showLogoutConfirm && (
                 <div className="logout-confirm-overlay">
@@ -195,7 +182,7 @@ const ChatPage = () => {
                     </div>
                 </div>
             )}
-        </div>
+        </>
     );
 };
 

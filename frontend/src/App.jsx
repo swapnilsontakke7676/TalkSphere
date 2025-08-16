@@ -2,12 +2,15 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ChatPage from "./pages/ChatPage";
-import { ThemeProvider } from './context/ThemeContext'; // Import the provider
+import AdminPage from "./pages/AdminPage";
+import SettingsPage from "./pages/SettingsPage"; // Import SettingsPage
+import Layout from "./components/Layout"; // Import Layout
+import { ThemeProvider } from './context/ThemeContext';
 import { useAuth } from "./context/AuthContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ForgotPassword from "./pages/ForgotPassword";
-import { SocketProvider } from "./context/SocketContext"; // Import SocketProvider
+import { SocketProvider } from "./context/SocketContext";
 
 function App() {
   const { user } = useAuth();
@@ -29,19 +32,26 @@ function App() {
         />
 
         <Route
-          path="/chats"
           element={
             user ? (
-              <SocketProvider> {/* Wrap ChatPage */}
+              <SocketProvider>
                 <ThemeProvider>
-                  <ChatPage />
+                  <Layout />
                 </ThemeProvider>
               </SocketProvider>
             ) : (
               <Navigate to="/login" />
             )
           }
-        />
+        >
+          <Route path="/chats" element={<ChatPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+          <Route
+            path="/admin"
+            element={user?.role === 'admin' ? <AdminPage /> : <Navigate to="/chats" />}
+          />
+        </Route>
+
         <Route path="/" element={<Navigate to="/login" />} />
       </Routes>
       <ToastContainer />

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useOutletContext } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { updateUser, updateUserPassword } from '../services/api';
 import { toast } from 'react-toastify';
@@ -6,6 +8,8 @@ import { FaUserCircle, FaLock, FaBell, FaSignOutAlt, FaArrowLeft, FaKey } from '
 import '../styles/settings.css';
 
 const SettingsPage = ({ initialSection, onBack, onLogout }) => {
+    const navigate = useNavigate();
+    const { handleLogoutClick } = useOutletContext(); // Get logout function from layout
     const { user, login } = useAuth();
     // State for My Account
     const [formData, setFormData] = useState({ name: '', email: '' });
@@ -164,11 +168,16 @@ const SettingsPage = ({ initialSection, onBack, onLogout }) => {
                     <li className={activeSection === 'password' ? 'active' : ''} onClick={() => handleSectionClick('password')}><FaKey /> Password & Security</li>
                     <li className={activeSection === 'privacy' ? 'active' : ''} onClick={() => handleSectionClick('privacy')}><FaLock /> Privacy & Safety</li>
                     <li className={activeSection === 'notifications' ? 'active' : ''} onClick={() => handleSectionClick('notifications')}><FaBell /> Notifications</li>
-                    <div className="nav-divider"></div>
-                    <li onClick={onLogout}><FaSignOutAlt /> Log Out</li>
+                    < div className="nav-divider" > </div>
+                    < li onClick={handleLogoutClick} > {/* Use the passed down function */}
+                        < FaSignOutAlt /> Log Out
+                    </li>
                 </ul>
-                <div className="back-button-wrapper">
-                    <button onClick={onBack} className="back-button"><FaArrowLeft /><span>Back to Chats</span></button>
+                < div className="back-button-wrapper" >
+                    <button onClick={() => navigate('/chats')} className="back-button" > {/* Use navigate */}
+                        <FaArrowLeft />
+                        <span>Back to Chats </span>
+                    </button>
                 </div>
             </div>
             <div className="settings-content">

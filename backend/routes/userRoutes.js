@@ -1,6 +1,20 @@
 const express = require('express');
-const { registerUser, loginUser, verifyOtp, resetPassword, forgotPassword, allUsers, updateUserProfile, updateUserPassword } = require('../controllers/userController');
+const {
+    registerUser,
+    loginUser,
+    verifyOtp,
+    resetPassword,
+    forgotPassword,
+    allUsers,
+    updateUserProfile,
+    updateUserPassword,
+    getUsers,
+    updateUserRole,
+    deleteUser
+} = require('../controllers/userController');
 const { protect } = require('../middleware/authMiddleware');
+const { admin } = require('../middleware/adminMiddleware'); // Import admin middleware
+
 const router = express.Router();
 
 router.route('/').get(protect, allUsers);
@@ -11,4 +25,13 @@ router.post('/forgot-password', forgotPassword);
 router.route('/password').put(protect, updateUserPassword);
 router.post('/verify-reset-otp', verifyOtp);
 router.post('/reset-password', resetPassword);
+
+// Add the new admin route
+router.route('/admin/users').get(protect, admin, getUsers);
+router
+    .route('/admin/users/:id')
+    .delete(protect, admin, deleteUser)
+    .put(protect, admin, updateUserRole);
+
+
 module.exports = router;

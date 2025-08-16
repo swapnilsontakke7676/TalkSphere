@@ -14,7 +14,13 @@ API.interceptors.request.use((req) => {
   return req;
 });
 
-//  http://localhost:5000/api/user/forgot-password
+
+// --- Admin Endpoints ---
+export const getAllUsers = () => API.get('/api/user/admin/users');
+export const deleteUserByAdmin = (id) => API.delete(`/api/user/admin/users/${id}`);
+export const updateUserRoleByAdmin = (id, role) => API.put(`/api/user/admin/users/${id}`, { role });
+
+
 // --- Authentication Endpoints ---
 export const registerUser = (formData) => API.post('/api/user/register', formData);
 export const loginUser = (formData) => API.post('/api/user/login', formData);
