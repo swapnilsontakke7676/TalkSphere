@@ -1,12 +1,30 @@
-/* frontend/src/styles/AdminPage.css */
-
 .admin-page {
     padding: 2rem;
     color: var(--text-primary);
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    height: 100vh;
+    overflow-y: auto;
 }
 
-/* ===== TABLE STYLES ===== */
+.admin-page::-webkit-scrollbar {
+    width: 8px;
+}
+
+.admin-page::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+.admin-page::-webkit-scrollbar-thumb {
+    background-color: var(--bg-tertiary);
+    border-radius: 10px;
+    border: 2px solid var(--bg-secondary);
+}
+
+.admin-page::-webkit-scrollbar-thumb:hover {
+    background-color: var(--border-primary);
+}
+
+
 .users-table {
     width: 100%;
     border-collapse: collapse;
@@ -32,7 +50,6 @@
     letter-spacing: 0.5px;
 }
 
-/* ===== BUTTON STYLES ===== */
 .delete-button {
     background-color: #ef4444;
     color: white;
@@ -47,6 +64,16 @@
 .delete-button:hover {
     background-color: #dc2626;
 }
+
+.role-select {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: 6px;
+    padding: 0.4rem 0.6rem;
+    cursor: pointer;
+}
+
 
 /* ===== RESPONSIVE ===== */
 
@@ -94,6 +121,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        text-align: right;
     }
 
     .users-table td::before {
@@ -102,6 +130,7 @@
         color: var(--text-secondary);
         flex: 1;
         text-align: left;
+        margin-right: 1rem;
     }
 
     .delete-button {
