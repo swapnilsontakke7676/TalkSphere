@@ -3,7 +3,8 @@
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background: var(--bg-primary, #202124); /* Dark background */
+  background: var(--bg-primary, #202124);
+  /* Dark background */
   padding: 1rem;
 }
 
@@ -118,4 +119,23 @@
 .btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+/* frontend/src/styles/forgot.css */
+
+.back-to-login {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+.back-to-login a {
+  color: var(--brand-primary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.back-to-login a:hover {
+  color: var(--brand-primary-hover);
+  text-decoration: underline;
 }
