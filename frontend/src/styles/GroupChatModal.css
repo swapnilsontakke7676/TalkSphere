@@ -1,36 +1,44 @@
 .modal-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
+    width: 100dvw;
+    height: 100dvh;
     background-color: rgba(0, 0, 0, 0.6);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1050;
+    z-index: 10000;
+    padding: clamp(12px, 3vh, 20px);
 }
 
 .modal-content {
     background: var(--bg-primary);
-    padding: 2rem;
-    border-radius: 12px;
-    width: 90%;
-    max-width: 500px;
     border: 1px solid var(--border-primary);
+    border-radius: 12px;
+    width: min(500px, 100%);
+    max-height: min(88dvh, 720px);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .modal-title {
     text-align: center;
-    font-size: 1.75rem;
-    margin-bottom: 1.5rem;
+    font-size: 1.6rem;
+    margin: 1rem 1rem 0.75rem;
     color: var(--text-primary);
+}
+
+.modal-body {
+    display: grid;
+    gap: 0.75rem;
+    padding: 0 1rem 0.75rem 1rem;
+    overflow: auto;
 }
 
 .modal-input {
     width: 100%;
     padding: 0.75rem;
-    margin-bottom: 1rem;
     border-radius: 8px;
     border: 1px solid var(--border-primary);
     background-color: var(--bg-tertiary);
@@ -42,12 +50,20 @@
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    margin-bottom: 1rem;
 }
 
 .search-results-container {
-    max-height: 150px;
+    max-height: 240px;
     overflow-y: auto;
+    margin-bottom: 0.25rem;
+}
+
+.modal-actions {
+    position: sticky;
+    bottom: 0;
+    padding: 0.75rem 1rem 1rem;
+    background: var(--bg-primary);
+    box-shadow: 0 -6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .modal-button {
@@ -74,4 +90,21 @@
 .close-button {
     background-color: var(--bg-tertiary);
     color: var(--text-primary);
+}
+
+@media (max-width: 480px) {
+    .modal-content {
+        border-radius: 0.75rem;
+        width: 100%;
+        max-height: 100dvh;
+    }
+
+    .modal-title {
+        font-size: 1.35rem;
+    }
+
+    .modal-input,
+    .modal-button {
+        font-size: 0.95rem;
+    }
 }
