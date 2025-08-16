@@ -487,6 +487,31 @@ body {
     opacity: 0.8;
 }
 
+/* Custom Scrollbar for Webkit Browsers (Chrome, Safari) */
+.chat-messages::-webkit-scrollbar {
+    width: 8px;
+    /* Width of the scrollbar */
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    /* Track color */
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background-color: var(--bg-tertiary);
+    /* Handle color */
+    border-radius: 10px;
+    /* Rounded corners */
+    border: 2px solid var(--bg-secondary);
+    /* Creates a margin around the handle */
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+    background-color: var(--border-primary);
+    /* Handle color on hover */
+}
+
 @media (max-width: 768px) {
 
     .main-nav {
