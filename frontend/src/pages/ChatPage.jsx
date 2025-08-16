@@ -62,10 +62,22 @@ const ChatPage = () => {
         if (!socket) return;
 
         const messageReceivedHandler = (newMessage) => {
-            if (!selectedChat || selectedChat._id !== newMessage.chat._id) {
-                // Handle notification for other chats
+            // Update the main chats list
+            setChats((prevChats) =>
+                prevChats.map((chat) => {
+                    if (chat._id === newMessage.chat._id) {
+                        return { ...chat, latestMessage: newMessage };
+                    }
+                    return chat;
+                })
+            );
+
+            // Update messages if the chat is currently open
+            if (selectedChat && selectedChat._id === newMessage.chat._id) {
+                setMessages((prevMessages) => [...prevMessages, newMessage]);
             } else {
-                setMessages((prev) => [...prev, newMessage]);
+                // Optional: You can add a notification here for messages in other chats
+                toast.info(`New message in ${newMessage.chat.isGroupChat ? newMessage.chat.chatName : newMessage.sender.name}`);
             }
         };
 
@@ -74,7 +86,7 @@ const ChatPage = () => {
         return () => {
             socket.off("message received", messageReceivedHandler);
         };
-    }, [socket, selectedChat]);
+    }, [socket, selectedChat, setChats]);
 
     // 4. Send a message
     const sendMessage = async (e) => {
@@ -88,6 +100,15 @@ const ChatPage = () => {
             });
             socket.emit("new message", data);
             setMessages([...messages, data]);
+            setChats(
+                chats.map((chat) => {
+                    if (chat._id === selectedChat._id) {
+                        return { ...chat, latestMessage: data };
+                    }
+                    return chat;
+                })
+            );
+
             setMessageInput('');
         } catch (error) {
             toast.error("Failed to send message");
