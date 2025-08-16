@@ -1,17 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { updateUser } from '../services/api';
+import { updateUser, updateUserPassword } from '../services/api';
 import { toast } from 'react-toastify';
-import { FaUserCircle, FaLock, FaBell, FaSignOutAlt, FaArrowLeft } from 'react-icons/fa';
+import { FaUserCircle, FaLock, FaBell, FaSignOutAlt, FaArrowLeft, FaKey } from 'react-icons/fa';
 import '../styles/settings.css';
 
 const SettingsPage = ({ initialSection, onBack, onLogout }) => {
     const { user, login } = useAuth();
+    // State for My Account
     const [formData, setFormData] = useState({ name: '', email: '' });
     const [profileImage, setProfileImage] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
+
+    // State for Password Change
+    const [passwordData, setPasswordData] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+    const [isChangingPassword, setIsChangingPassword] = useState(false);
+
     const [activeSection, setActiveSection] = useState('account');
-    const [mobileView, setMobileView] = useState('menu'); // 'menu' or 'content'
+    const [mobileView, setMobileView] = useState('menu');
 
     useEffect(() => {
         if (user) {
@@ -21,10 +27,9 @@ const SettingsPage = ({ initialSection, onBack, onLogout }) => {
     }, [user]);
 
     useEffect(() => {
-        // If navigated directly to a section (e.g., from Profile icon)
         if (initialSection) {
             setActiveSection(initialSection);
-            setMobileView('content'); // Show the content view directly on mobile
+            setMobileView('content');
         }
     }, [initialSection]);
 
@@ -41,33 +46,49 @@ const SettingsPage = ({ initialSection, onBack, onLogout }) => {
         if (formData.name === user.name && profileImage === user.profilePic) {
             return toast.info("No changes to save.");
         }
-        setIsLoading(true);
+        setIsSaving(true);
         try {
-            const { data } = await updateUser(user._id, {
-                name: formData.name,
-                profilePic: profileImage,
-            });
-            login(data); // This updates the user in context and local storage
+            const { data } = await updateUser(user._id, { name: formData.name, profilePic: profileImage });
+            login(data);
             toast.success("Profile updated successfully!");
         } catch (error) {
             toast.error(error.response?.data?.message || "Failed to update profile.");
         } finally {
-            setIsLoading(false);
+            setIsSaving(false);
+        }
+    };
+
+    const handlePasswordChange = async () => {
+        if (!passwordData.currentPassword || !passwordData.newPassword) {
+            return toast.error("Please fill all password fields.");
+        }
+        if (passwordData.newPassword !== passwordData.confirmPassword) {
+            return toast.error("New passwords do not match.");
+        }
+        setIsChangingPassword(true);
+        try {
+            await updateUserPassword({
+                currentPassword: passwordData.currentPassword,
+                newPassword: passwordData.newPassword
+            });
+            toast.success("Password changed successfully!");
+            setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Failed to change password.");
+        } finally {
+            setIsChangingPassword(false);
         }
     };
 
     const handleSectionClick = (section) => {
         setActiveSection(section);
-        setMobileView('content'); // Switch to content view on mobile
+        setMobileView('content');
     };
 
-    // This new function handles the back navigation logic
     const handleMobileBack = () => {
-        // If we came directly to a section, go all the way back to chats
         if (initialSection) {
             onBack();
         } else {
-            // Otherwise, just go back to the settings menu
             setMobileView('menu');
         }
     };
@@ -77,17 +98,13 @@ const SettingsPage = ({ initialSection, onBack, onLogout }) => {
             case 'account':
                 return (
                     <div className="settings-content-main">
-                        <button className="mobile-back-button" onClick={handleMobileBack}>
-                            <FaArrowLeft /> Back
-                        </button>
+                        <button className="mobile-back-button" onClick={handleMobileBack}><FaArrowLeft /> Back</button>
                         <h3>My Account</h3>
                         <div className="account-card">
                             <div className="account-header">
                                 <div className="avatar-uploader">
                                     <img src={profileImage} alt="Avatar" className="large-avatar" />
-                                    <label htmlFor="avatar-upload" className="avatar-edit-label">
-                                        Change Avatar
-                                    </label>
+                                    <label htmlFor="avatar-upload" className="avatar-edit-label">Change Avatar</label>
                                     <input id="avatar-upload" type="file" accept="image/*" onChange={handleImageUpload} />
                                 </div>
                                 <div className="user-info-display">
@@ -96,25 +113,33 @@ const SettingsPage = ({ initialSection, onBack, onLogout }) => {
                                 </div>
                             </div>
                             <div className="account-form">
+                                <div className="form-group"><label>FULL NAME</label><input type="text" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} /></div>
+                                <div className="form-group"><label>EMAIL</label><input type="email" value={formData.email} disabled /></div>
+                                <button className="save-button" onClick={handleSaveChanges} disabled={isSaving}>{isSaving ? "Saving..." : "Save Changes"}</button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            case 'password':
+                return (
+                    <div className="settings-content-main">
+                        <button className="mobile-back-button" onClick={handleMobileBack}><FaArrowLeft /> Back</button>
+                        <h3>Password & Security</h3>
+                        <div className="account-card">
+                            <div className="account-form">
                                 <div className="form-group">
-                                    <label>USERNAME</label>
-                                    <input type="text" value={user.username} disabled />
+                                    <label>CURRENT PASSWORD</label>
+                                    <input type="password" placeholder="••••••••" value={passwordData.currentPassword} onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })} />
                                 </div>
                                 <div className="form-group">
-                                    <label>FULL NAME</label>
-                                    <input
-                                        type="text"
-                                        value={formData.name}
-                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                    />
+                                    <label>NEW PASSWORD</label>
+                                    <input type="password" placeholder="••••••••" value={passwordData.newPassword} onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })} />
                                 </div>
                                 <div className="form-group">
-                                    <label>EMAIL</label>
-                                    <input type="email" value={formData.email} disabled />
+                                    <label>CONFIRM NEW PASSWORD</label>
+                                    <input type="password" placeholder="••••••••" value={passwordData.confirmPassword} onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })} />
                                 </div>
-                                <button className="save-button" onClick={handleSaveChanges} disabled={isLoading}>
-                                    {isLoading ? "Saving..." : "Save Changes"}
-                                </button>
+                                <button className="save-button" onClick={handlePasswordChange} disabled={isChangingPassword}>{isChangingPassword ? "Saving..." : "Change Password"}</button>
                             </div>
                         </div>
                     </div>
@@ -122,9 +147,7 @@ const SettingsPage = ({ initialSection, onBack, onLogout }) => {
             default:
                 return (
                     <div className="settings-content-main">
-                        <button className="mobile-back-button" onClick={handleMobileBack}>
-                            <FaArrowLeft /> Back
-                        </button>
+                        <button className="mobile-back-button" onClick={handleMobileBack}><FaArrowLeft /> Back</button>
                         <h3>{activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}</h3>
                         <p>Settings for this section are not yet available.</p>
                     </div>
@@ -137,25 +160,15 @@ const SettingsPage = ({ initialSection, onBack, onLogout }) => {
             <div className="settings-sidebar">
                 <ul className="settings-nav">
                     <p className="nav-header">User Settings</p>
-                    <li className={activeSection === 'account' ? 'active' : ''} onClick={() => handleSectionClick('account')}>
-                        <FaUserCircle /> My Account
-                    </li>
-                    <li className={activeSection === 'privacy' ? 'active' : ''} onClick={() => handleSectionClick('privacy')}>
-                        <FaLock /> Privacy & Safety
-                    </li>
-                    <li className={activeSection === 'notifications' ? 'active' : ''} onClick={() => handleSectionClick('notifications')}>
-                        <FaBell /> Notifications
-                    </li>
+                    <li className={activeSection === 'account' ? 'active' : ''} onClick={() => handleSectionClick('account')}><FaUserCircle /> My Account</li>
+                    <li className={activeSection === 'password' ? 'active' : ''} onClick={() => handleSectionClick('password')}><FaKey /> Password & Security</li>
+                    <li className={activeSection === 'privacy' ? 'active' : ''} onClick={() => handleSectionClick('privacy')}><FaLock /> Privacy & Safety</li>
+                    <li className={activeSection === 'notifications' ? 'active' : ''} onClick={() => handleSectionClick('notifications')}><FaBell /> Notifications</li>
                     <div className="nav-divider"></div>
-                    <li onClick={onLogout}>
-                        <FaSignOutAlt /> Log Out
-                    </li>
+                    <li onClick={onLogout}><FaSignOutAlt /> Log Out</li>
                 </ul>
                 <div className="back-button-wrapper">
-                    <button onClick={onBack} className="back-button">
-                        <FaArrowLeft />
-                        <span>Back to Chats</span>
-                    </button>
+                    <button onClick={onBack} className="back-button"><FaArrowLeft /><span>Back to Chats</span></button>
                 </div>
             </div>
             <div className="settings-content">
