@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../styles/forgot.css";
 import { toast } from "react-toastify";
@@ -35,11 +34,11 @@ const ForgotPassword = () => {
           toast.error("Please enter full 6-digit OTP");
           return;
         }
-        await verifyUser({ email, otp: otp.toString().trim() }); // Calls /verify-reset-otp
+        await verifyUser({ email, otp: otp.toString().trim() });
         toast.success("OTP verified");
         setStep(3);
       } else if (step === 3) {
-        await resetUser({ email, otp, newPassword }); // Calls /reset-password
+        await resetUser({ email, otp, newPassword });
         toast.success("Password reset successfully");
         setTimeout(() => navigate("/login"), 1000);
       }
@@ -69,42 +68,56 @@ const ForgotPassword = () => {
 
         {step === 2 && (
           <>
-            <h2>Verify OTP sent to {email}</h2>
-            <div
-              style={{
-                display: "flex",
-                gap: "15px",
-                justifyContent: "center",
-                marginBottom: "1rem",
-              }}
-            >
-              {otp
-                .split("")
-                .concat(new Array(6 - otp.length).fill(""))
-                .map((digit, i) => (
-                  <input
-                    key={i}
-                    type="text"
-                    maxLength="1"
-                    value={otp[i] || ""}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      if (!/^\d*$/.test(val)) return;
+            <h2>Verify OTP</h2>
+            <p className="otp-subtitle">OTP has been sent to <b>{email}</b></p>
+            <div className="otp-box">
+              {[...Array(6)].map((_, i) => (
+                <input
+                  key={i}
+                  type="text"
+                  maxLength="1"
+                  value={otp[i] || ""}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (!/^\d*$/.test(val)) return;
+
+                    let newOtp = otp.split("");
+                    newOtp[i] = val;
+
+                    if (val.length > 1) {
+                      const pasted = val.slice(0, 6).split("");
+                      setOtp(pasted.join(""));
+                      return;
+                    }
+
+                    setOtp(newOtp.join(""));
+                    if (val && i < 5) {
+                      document.getElementById(`otp-${i + 1}`).focus();
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Backspace" && !otp[i] && i > 0) {
+                      document.getElementById(`otp-${i - 1}`).focus();
                       let newOtp = otp.split("");
-                      newOtp[i] = val;
-                      if (val && i < 5)
-                        document.getElementById(`otp-${i + 1}`).focus();
+                      newOtp[i - 1] = "";
                       setOtp(newOtp.join(""));
-                    }}
-                    id={`otp-${i}`}
-                    style={{
-                      width: "40px",
-                      height: "40px",
-                      fontSize: "24px",
-                      textAlign: "center",
-                    }}
-                  />
-                ))}
+                    }
+                  }}
+                  onPaste={(e) => {
+                    e.preventDefault();
+                    const pasted = e.clipboardData
+                      .getData("text")
+                      .trim()
+                      .slice(0, 6);
+                    if (/^\d+$/.test(pasted)) {
+                      setOtp(pasted);
+                      document.getElementById(`otp-${pasted.length - 1}`).focus();
+                    }
+                  }}
+                  id={`otp-${i}`}
+                  className="otp-input"
+                />
+              ))}
             </div>
           </>
         )}
@@ -115,12 +128,16 @@ const ForgotPassword = () => {
             <div className="password-wrapper">
               <input
                 type={showPassword ? "text" : "password"}
+                className="form-input"
                 placeholder="New Password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 required
               />
-              <span className="toggle-icon" onClick={togglePasswordVisibility}>
+              <span
+                className="toggle-icon"
+                onClick={togglePasswordVisibility}
+              >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </span>
             </div>
@@ -128,7 +145,13 @@ const ForgotPassword = () => {
         )}
 
         <button type="submit" className="btn" disabled={loading}>
-          {loading ? "Sending..." : step === 1 ? "Send OTP" : step === 2 ? "Verify OTP" : "Reset Password"}
+          {loading
+            ? "Processing..."
+            : step === 1
+            ? "Send OTP"
+            : step === 2
+            ? "Verify OTP"
+            : "Reset Password"}
         </button>
       </form>
     </div>

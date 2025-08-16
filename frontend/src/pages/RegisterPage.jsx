@@ -94,7 +94,7 @@ const RegisterPage = () => {
                         />
                     </div>
 
-                    <button type="submit" className="register-btn">Register</button>
+                    <button type="submit" className="btn">Register</button>
 
                     <p className="login-link-container">
                         Already have an account?
