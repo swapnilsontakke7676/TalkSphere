@@ -18,7 +18,8 @@ API.interceptors.request.use((req) => {
 // --- Admin Endpoints ---
 export const getAllUsers = () => API.get('/api/user/admin/users');
 export const deleteUserByAdmin = (id) => API.delete(`/api/user/admin/users/${id}`);
-export const updateUserRoleByAdmin = (id, role) => API.put(`/api/user/admin/users/${id}`, { role });
+export const updateUserRoleByAdmin = (id, role) => API.put(`/api/user/admin/users/${id}`, role);
+export const getAdminStats = () => API.get('/api/user/admin/stats'); // Add this line
 
 
 // --- Authentication Endpoints ---

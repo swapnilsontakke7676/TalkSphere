@@ -1,4 +1,5 @@
 const User = require("../models/userModel");
+const Chat = require("../models/chatModel"); // Import Chat model
 const generateToken = require("../config/generateToken");
 const nodemailer = require("nodemailer");
 
@@ -299,6 +300,23 @@ const updateUserRole = async (req, res) => {
   }
 };
 
+
+// @desc    Get Admin Stats
+// @route   GET /api/user/admin/stats
+// @access  Private/Admin
+const getAdminStats = async (req, res) => {
+  try {
+    const userCount = await User.countDocuments();
+    const chatCount = await Chat.countDocuments();
+    res.json({
+      users: userCount,
+      chats: chatCount,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 const getUsers = async (req, res) => {
   const users = await User.find({});
   res.json(users);
@@ -313,6 +331,7 @@ module.exports = {
   allUsers,
   updateUserProfile,
   updateUserPassword,
+  getAdminStats,
   getUsers,
   deleteUser,
   updateUserRole,

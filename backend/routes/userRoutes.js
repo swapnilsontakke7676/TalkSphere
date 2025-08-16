@@ -8,9 +8,10 @@ const {
     allUsers,
     updateUserProfile,
     updateUserPassword,
+    getAdminStats,
     getUsers,
     updateUserRole,
-    deleteUser
+    deleteUser,
 } = require('../controllers/userController');
 const { protect } = require('../middleware/authMiddleware');
 const { admin } = require('../middleware/adminMiddleware'); // Import admin middleware
@@ -27,6 +28,7 @@ router.post('/verify-reset-otp', verifyOtp);
 router.post('/reset-password', resetPassword);
 
 // Add the new admin route
+router.route('/admin/stats').get(protect, admin, getAdminStats);
 router.route('/admin/users').get(protect, admin, getUsers);
 router
     .route('/admin/users/:id')
