@@ -14,9 +14,9 @@ import SettingsPage from './SettingsPage'; // Assuming these are used
 import ProfilePage from './ProfilePage'; // Assuming these are used
 
 const ChatPage = () => {
-    const { user } = useAuth();
+    const { user, logout } = useAuth();
     const { selectedChat, setSelectedChat, chats, setChats } = useChat(); // Use context state
-    
+
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
     const [messageInput, setMessageInput] = useState('');
@@ -56,7 +56,7 @@ const ChatPage = () => {
         };
         getMessages();
     }, [selectedChat, socket]);
-    
+
     // 3. Listen for incoming messages
     useEffect(() => {
         if (!socket) return;
@@ -93,11 +93,21 @@ const ChatPage = () => {
             toast.error("Failed to send message");
         }
     };
-    
+
     // Helper functions
     const toggleDrawer = () => setDrawerOpen(!isDrawerOpen);
     const handleBack = () => setSelectedChat(null);
     const handleNavigate = (view) => setCurrentView(view);
+
+    // Logout confirmation popup state
+    const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
+    const handleLogoutClick = () => setShowLogoutConfirm(true);
+    const handleLogoutConfirm = () => {
+        setShowLogoutConfirm(false);
+        logout();
+    };
+    const handleLogoutCancel = () => setShowLogoutConfirm(false);
 
     return (
         <div className="chat-container">
@@ -105,22 +115,36 @@ const ChatPage = () => {
             <SideDrawer isOpen={isDrawerOpen} onClose={toggleDrawer} />
 
             {currentView === 'chats' && (
-                    <div className={`chat-layout ${selectedChat ? 'view-chat' : ''}`}>
+                <div className={`chat-layout ${selectedChat ? 'view-chat' : ''}`}>
                     <ChatList startNewChat={toggleDrawer} />
-                        <ChatBox
+                    <ChatBox
                         currentChat={selectedChat}
                         currentMessages={messages}
-                            messageInput={messageInput}
-                            setMessageInput={setMessageInput}
-                            sendMessage={sendMessage}
-                            handleBack={handleBack}
+                        messageInput={messageInput}
+                        setMessageInput={setMessageInput}
+                        sendMessage={sendMessage}
+                        handleBack={handleBack}
                         loading={loading}
-                        />
-                    </div>
-                )}
+                    />
+                </div>
+            )}
 
-            {currentView === 'settings' && <SettingsPage />}
+            {currentView === 'settings' && (
+                <SettingsPage
+                    onLogout={handleLogoutClick}
+                />
+            )}
             {currentView === 'profile' && <ProfilePage user={user} onBack={() => handleNavigate('chats')} />}
+
+            {showLogoutConfirm && (
+                <div className="logout-confirm-overlay">
+                    <div className="logout-confirm-modal">
+                        <p>Are you sure you want to logout?</p>
+                        <button onClick={handleLogoutConfirm}>Yes</button>
+                        <button onClick={handleLogoutCancel}>No</button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
