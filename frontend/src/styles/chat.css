@@ -553,6 +553,29 @@ body {
     background-color: var(--border-primary);
 }
 
+
+/* This is the new clickable wrapper for the avatar and name */
+.chat-header-clickable {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+    flex-grow: 1;
+    /* Allows it to take up the remaining space */
+}
+
+.chat-header-clickable:hover {
+    background-color: var(--bg-tertiary);
+}
+
+/* Hide the old container with the eye icon */
+.chat-header-actions {
+    display: none;
+}
+
 @media (max-width: 768px) {
 
     .main-nav {

@@ -21,9 +21,15 @@ export const loginUser = (formData) => API.post('/api/user/login', formData);
 export const forgotUser = (formData) => API.post('/api/user/forgot-password', formData);
 export const verifyUser = (formData) => API.post('/api/user/verify-reset-otp', formData);
 export const resetUser = (formData) => API.post('/api/user/reset-password', formData);
+
+// --- Chat Endpoints ---
 export const fetchChats = () => API.get('/api/chat');
 export const accessChat = (userId) => API.post('/api/chat', { userId });
 export const createGroupChat = (chatData) => API.post('/api/chat/group', chatData);
+// --- Group Chat Management Endpoints ---
+export const renameGroup = (chatId, chatName) => API.put('/api/chat/rename', { chatId, chatName });
+export const addUserToGroup = (chatId, userId) => API.put('/api/chat/groupadd', { chatId, userId });
+export const removeUserFromGroup = (chatId, userId) => API.put('/api/chat/groupremove', { chatId, userId });
 
 // --- User Search Endpoint ---
 export const searchUsers = (searchQuery) => API.get(`/api/user?search=${searchQuery}`);
