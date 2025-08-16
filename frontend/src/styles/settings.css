@@ -112,3 +112,27 @@
 .settings-content p {
     max-width: 350px;
 }
+
+/* Responsive adjustments for Settings Page */
+@media (max-width: 768px) {
+    .settings-container {
+        flex-direction: column;
+    }
+
+    .settings-sidebar {
+        width: 100%;
+        max-width: none;
+        border-right: none;
+        border-bottom: 1px solid var(--border-primary);
+    }
+
+    .settings-content {
+        /* Adjust background for smaller screens if needed */
+        background-position: center 20%;
+        padding: 2rem 1rem;
+    }
+
+    .settings-content h2 {
+        font-size: 1.5rem;
+    }
+}

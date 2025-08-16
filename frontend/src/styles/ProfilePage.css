@@ -79,3 +79,25 @@
     flex-grow: 1;
     /* You can style this area if you want something other than the background */
 }
+
+/* Responsive adjustments for Profile Page */
+@media (max-width: 768px) {
+    .profile-page-container {
+        flex-direction: column;
+    }
+
+    .profile-sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border-primary);
+    }
+
+    .profile-header {
+        margin-bottom: 20px;
+    }
+
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+    }
+}
