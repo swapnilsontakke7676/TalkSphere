@@ -642,6 +642,14 @@ body {
     transform: scale(0.98);
 }
 
+/* Typing Indicator */
+.typing-indicator {
+    margin: 0.5rem 2rem;
+    font-style: italic;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
 @media (max-width: 768px) {
 
     .main-nav {

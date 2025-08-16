@@ -51,7 +51,15 @@ const ChatList = ({ startNewChat }) => {
                                         </div>
                                     )}
                                 </div>
-                                <div className="chat-preview">{chat.latestMessage?.content}</div>
+                                <div className="chat-preview">
+                                    {chat.latestMessage && (
+                                        <>
+                                            {chat.latestMessage.sender &&
+                                                `${chat.latestMessage.sender.name.split(' ')[0]}: `}
+                                            {chat.latestMessage.content}
+                                        </>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     ))}

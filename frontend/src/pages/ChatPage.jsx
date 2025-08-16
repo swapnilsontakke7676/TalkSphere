@@ -25,6 +25,31 @@ const ChatPage = () => {
 
     const socket = useSocket();
 
+    const [isTyping, setIsTyping] = useState(false);
+    const [typingTimeout, setTypingTimeout] = useState(null);
+
+    useEffect(() => {
+        if (!socket) return;
+        socket.on('typing', () => setIsTyping(true));
+        socket.on('stop typing', () => setIsTyping(false));
+    }, [socket]);
+
+    const handleTyping = (e) => {
+        setMessageInput(e.target.value);
+
+        if (!socket) return;
+
+        socket.emit('typing', selectedChat._id);
+
+        if (typingTimeout) clearTimeout(typingTimeout);
+
+        const timer = setTimeout(() => {
+            socket.emit('stop typing', selectedChat._id);
+        }, 3000); // 3 seconds
+
+        setTypingTimeout(timer);
+    };
+
     // 1. Fetch all chats for the logged-in user
     useEffect(() => {
         const getChats = async () => {
@@ -146,6 +171,8 @@ const ChatPage = () => {
                         sendMessage={sendMessage}
                         handleBack={handleBack}
                         loading={loading}
+                        isTyping={isTyping}
+                        handleTyping={handleTyping}
                     />
                 </div>
             )}

@@ -4,7 +4,7 @@ import ScrollableChat from './ScrollableChat';
 import ProfileModal from './ProfileModal';
 import UpdateGroupChatModal from './UpdateGroupChatModal';
 
-const ChatBox = ({ currentChat, currentMessages, messageInput, setMessageInput, sendMessage, handleBack, loading, fetchMessages }) => {
+const ChatBox = ({ currentChat, currentMessages, messageInput, setMessageInput, sendMessage, handleBack, loading, fetchMessages, isTyping, handleTyping }) => {
     const { user } = useAuth();
     const [isProfileModalOpen, setProfileModalOpen] = useState(false);
     const [isGroupModalOpen, setGroupModalOpen] = useState(false);
@@ -13,7 +13,7 @@ const ChatBox = ({ currentChat, currentMessages, messageInput, setMessageInput, 
     const getSender = (loggedUser, users) => {
         return users[0]?._id === loggedUser?._id ? users[1] : users[0];
     };
-    
+
     // This helper gets the initials for the avatar
     const getSenderAvatar = (senderObject) => {
         return senderObject?.name?.substring(0, 2).toUpperCase() || '??';
@@ -39,13 +39,13 @@ const ChatBox = ({ currentChat, currentMessages, messageInput, setMessageInput, 
                     <button className="back-btn" onClick={handleBack}>&#8592;</button>
 
                     {/* This is the new clickable area */}
-                    <div 
-                        className="chat-header-clickable" 
+                    <div
+                        className="chat-header-clickable"
                         onClick={() => currentChat.isGroupChat ? setGroupModalOpen(true) : setProfileModalOpen(true)}
                     >
                         <div className="chat-avatar">
-                            {!currentChat.isGroupChat 
-                                ? getSenderAvatar(sender) 
+                            {!currentChat.isGroupChat
+                                ? getSenderAvatar(sender)
                                 : currentChat.chatName.substring(0, 2).toUpperCase()}
                         </div>
                         <div className="chat-header-info">
@@ -57,6 +57,7 @@ const ChatBox = ({ currentChat, currentMessages, messageInput, setMessageInput, 
 
                 <div className="chat-messages">
                     {loading ? <p>Loading messages...</p> : <ScrollableChat messages={currentMessages} />}
+                    {isTyping ? <div className="typing-indicator">Typing...</div> : <></>}
                 </div>
 
                 <div className="chat-input-container">
@@ -65,7 +66,10 @@ const ChatBox = ({ currentChat, currentMessages, messageInput, setMessageInput, 
                             type="text"
                             className="chat-input"
                             value={messageInput}
-                            onChange={(e) => setMessageInput(e.target.value)}
+                            onChange={(e) => {
+                                setMessageInput(e.target.value);
+                                handleTyping(e);
+                            }}
                             placeholder="Type a message..."
                             required
                         />
