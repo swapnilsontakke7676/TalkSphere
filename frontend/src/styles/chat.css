@@ -417,6 +417,21 @@ body {
     max-width: 350px;
 }
 
+.chat-search {
+    padding: 10px;
+}
+
+.chat-search input {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border-primary);
+    color: var(--text-primary);
+    outline: none;
+    font-size: 14px;
+    background-color: var(--bg-tertiary);
+}
+
 @media (max-width: 768px) {
 
     .main-nav {
