@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { loginUser } from "../services/api";
@@ -8,14 +8,32 @@ import "../styles/login.css"; // Assuming you have a CSS file for styles
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  // On component mount, check localStorage for a remembered email
+  useEffect(() => {
+    const rememberedEmail = localStorage.getItem("rememberedEmail");
+    if (rememberedEmail) {
+      setEmail(rememberedEmail);
+      setRememberMe(true);
+    }
+  }, []); // Empty array ensures this runs only once
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const { data } = await loginUser({ email, password });
       login(data);
+
+      // Save or remove the email from localStorage based on the checkbox
+      if (rememberMe) {
+        localStorage.setItem("rememberedEmail", email);
+      } else {
+        localStorage.removeItem("rememberedEmail");
+      }
+
       toast.success("Logged in successfully!");
       navigate("/chats");
     } catch (error) {
@@ -88,6 +106,8 @@ const LoginPage = () => {
               name="remember-me"
               type="checkbox"
               className="checkbox"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
             />
             <label htmlFor="remember-me" className="checkbox-label">
               Remember me
