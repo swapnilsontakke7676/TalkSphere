@@ -21,7 +21,11 @@ export const loginUser = (formData) => API.post('/api/user/login', formData);
 export const forgotUser = (formData) => API.post('/api/user/forgot-password', formData);
 export const verifyUser = (formData) => API.post('/api/user/verify-reset-otp', formData);
 export const resetUser = (formData) => API.post('/api/user/reset-password', formData);
+export const fetchChats = () => API.get('/api/chat');
+export const accessChat = (userId) => API.post('/api/chat', { userId });
 
+// --- User Search Endpoint ---
+export const searchUsers = (searchQuery) => API.get(`/api/user?search=${searchQuery}`);
 
 // --- Message Endpoints (NEWLY ADDED) ---
 

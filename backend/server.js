@@ -29,8 +29,8 @@ app.get('/', (req, res) => {
 
 // Mount Routers (we will create these later)
 app.use('/api/user', require('./routes/userRoutes'));
-// app.use('/api/chat', require('./routes/chatRoutes'));
-// app.use('/api/message', require('./routes/messageRoutes'));
+app.use('/api/chat', require('./routes/chatRoutes')); // Add this line
+app.use('/api/message', require('./routes/messageRoutes')); // Add this line
 
 
 const PORT = process.env.PORT || 5000;

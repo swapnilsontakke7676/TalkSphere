@@ -7,7 +7,7 @@ import { useAuth } from "./context/AuthContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ForgotPassword from "./pages/ForgotPassword";
-import UpdateProfile from "./components/UpdateProfile";
+import { SocketProvider } from "./context/SocketContext"; // Import SocketProvider
 
 function App() {
   const { user } = useAuth();
@@ -30,11 +30,17 @@ function App() {
 
         <Route
           path="/chats"
-          element={user ?
-            <ThemeProvider>
-              <ChatPage />
-            </ThemeProvider>
-            : <Navigate to="/login" />}
+          element={
+            user ? (
+              <SocketProvider> {/* Wrap ChatPage */}
+                <ThemeProvider>
+                  <ChatPage />
+                </ThemeProvider>
+              </SocketProvider>
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
         />
         <Route path="/" element={<Navigate to="/login" />} />
       </Routes>

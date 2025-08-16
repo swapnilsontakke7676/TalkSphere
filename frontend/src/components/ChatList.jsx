@@ -1,50 +1,50 @@
-import React, { useState } from "react";
+import React from 'react';
+import { useAuth } from '../context/AuthContext';
+import { useChat } from '../context/ChatContext';
 
-const ChatList = ({ chats, selectedChat, selectChat, startNewChat }) => {
-    const [searchTerm, setSearchTerm] = useState("");
-    const filteredChats = Object.entries(chats).filter(([chatId, chat]) =>
-        chat.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        chat.preview.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+const ChatList = ({ startNewChat }) => {
+    const { user } = useAuth();
+    const { chats, selectedChat, setSelectedChat } = useChat();
+
+    // Helper to get the other user's name in a 1-on-1 chat
+    const getSenderName = (loggedUser, users) => {
+        return users[0]?._id === loggedUser?._id ? users[1]?.name : users[0]?.name;
+    };
+
+    const getSenderAvatar = (loggedUser, users) => {
+        const senderName = users[0]?._id === loggedUser?._id ? users[1]?.name : users[0]?.name;
+        return senderName?.substring(0, 2).toUpperCase() || '??';
+    }
 
     return (
         <div className="chat-list">
             <div className="chat-list-header">
                 <h2 className="chat-list-title">Chats</h2>
             </div>
-
-            {/* Search bar */}
-            <div className="chat-search">
-                <input
-                    type="text"
-                    placeholder="Search chats..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
-            </div>
             <div className="chat-items">
-                {filteredChats.length > 0 ? (
-                    filteredChats.map(([chatId, chat]) => (
-                        <div
-                            key={chatId}
-                            className={`chat-item ${selectedChat === chatId ? "selected" : ""}`}
-                            onClick={() => selectChat(chatId)}
-                        >
-                            <div className="chat-avatar">{chat.avatar}</div>
-                            <div className="chat-info">
-                                <div className="chat-name-time">
-                                    <div className="chat-name">{chat.name}</div>
-                                    <div className="chat-time">{chat.time}</div>
+                {chats.map((chat) => (
+                    <div
+                        key={chat._id}
+                        className={`chat-item ${selectedChat?._id === chat._id ? "selected" : ""}`}
+                        onClick={() => setSelectedChat(chat)}
+                    >
+                        <div className="chat-avatar">{!chat.isGroupChat ? getSenderAvatar(user, chat.users) : chat.chatName.substring(0, 2).toUpperCase()}</div>
+                        <div className="chat-info">
+                            <div className="chat-name-time">
+                                <div className="chat-name">
+                                    {!chat.isGroupChat ? getSenderName(user, chat.users) : chat.chatName}
                                 </div>
-                                <div className="chat-preview">{chat.preview}</div>
+                                {chat.latestMessage && (
+                                    <div className="chat-time">
+                                        {new Date(chat.latestMessage.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                    </div>
+                                )}
                             </div>
+                            <div className="chat-preview">{chat.latestMessage?.content}</div>
                         </div>
-                    ))
-                ) : (
-                    <div className="no-chats">No chats found</div>
-                )}
+                    </div>
+                ))}
             </div>
-
             <button className="new-chat-fab" onClick={startNewChat}>+</button>
         </div>
     );

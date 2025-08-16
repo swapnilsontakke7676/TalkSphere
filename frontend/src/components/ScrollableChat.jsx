@@ -3,37 +3,37 @@ import { useAuth } from '../context/AuthContext';
 
 const ScrollableChat = ({ messages }) => {
     const { user } = useAuth();
-    const scrollRef = useRef();
+    const scrollRef = useRef(null);
 
-    // This effect will run every time the messages array changes
+    // Effect to scroll to the bottom when new messages arrive
     useEffect(() => {
-        // If the ref is attached to an element, scroll to the bottom
         if (scrollRef.current) {
             scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
         }
     }, [messages]);
 
+    // We use the parent div with the 'chat-messages' class for scrolling,
+    // so we pass the ref up to it via the ChatBox component.
+    // For simplicity here, we'll apply styles to ensure it's scrollable.
     return (
-        <div ref={scrollRef} className="flex-grow overflow-y-auto p-2">
-            {messages && messages.map((m, i) => (
-                <div className={`flex ${m.sender._id === user._id ? 'justify-end' : 'justify-start'}`} key={m._id}>
-                    <div
-                        className={`max-w-xs lg:max-w-md px-4 py-2 my-1 rounded-lg ${m.sender._id === user._id
-                                ? 'bg-blue-500 text-white'
-                                : 'bg-gray-200 text-gray-800'
-                            }`}
-                    >
-                        {/* If it's a group chat and not your message, show sender name */}
-                        {m.chat.isGroupChat && m.sender._id !== user._id && (
-                            <p className="text-xs font-bold" style={{ color: m.sender._id === user._id ? 'white' : 'black' }}>{m.sender.name}</p>
-                        )}
-                        <p className="break-words">{m.content}</p>
-                        <p className="text-xs text-right opacity-70 mt-1">
-                            {new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        </p>
+        <div ref={scrollRef} style={{ height: '100%', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
+            {messages && messages.map((m) => {
+                const isSentByMe = m.sender._id === user._id;
+                return (
+                    <div className={`message ${isSentByMe ? 'sent' : 'received'}`} key={m._id}>
+                        <div className="message-content">
+                            {/* Display sender's name in group chats for received messages */}
+                            {!isSentByMe && m.chat.isGroupChat && (
+                                <p className="sender-name">{m.sender.name}</p>
+                            )}
+                            <p>{m.content}</p>
+                            <span className="timestamp">
+                                {new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </span>
+                        </div>
                     </div>
-                </div>
-            ))}
+                );
+            })}
         </div>
     );
 };

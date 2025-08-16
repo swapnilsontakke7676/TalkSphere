@@ -17,33 +17,32 @@ module.exports = function (io) {
     io.on("connection", (socket) => {
         console.log("A user connected:", socket.id);
 
-        // Add user to online list
         socket.on("addUser", (userId) => {
             addNewUser(userId, socket.id);
             io.emit("getOnlineUsers", onlineUsers);
         });
 
-        // Join a chat room
         socket.on('join chat', (room) => {
             socket.join(room);
             console.log('User joined room: ' + room);
         });
 
-        // Handle typing indicator
         socket.on('typing', (room) => socket.in(room).emit('typing'));
         socket.on('stop typing', (room) => socket.in(room).emit('stop typing'));
 
-        // Handle new message
+        // --- CORRECTED MESSAGE HANDLER ---
         socket.on("new message", (newMessage) => {
             const chat = newMessage.chat;
+
             if (!chat.users) return console.log("chat.users not defined");
 
-            chat.users.forEach(user => {
-                if (user._id == newMessage.sender._id) return;
-                // Send to the specific room (chatId)
-                socket.in(user._id).emit("message received", newMessage);
-            });
+            // The room ID is the chat ID
+            const room = chat._id;
+
+            // Emit to all users in the chat room except the sender
+            socket.to(room).emit("message received", newMessage);
         });
+        // ---------------------------------
 
         socket.on("disconnect", () => {
             console.log("A user disconnected:", socket.id);

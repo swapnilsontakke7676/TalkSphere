@@ -2,6 +2,23 @@ const User = require("../models/userModel");
 const generateToken = require("../config/generateToken");
 const nodemailer = require("nodemailer");
 
+// Fetch all users
+// GET /api/user
+// Protected
+const allUsers = async (req, res) => {
+  const keyword = req.query.search
+    ? {
+      $or: [
+        { name: { $regex: req.query.search, $options: "i" } },
+        { email: { $regex: req.query.search, $options: "i" } },
+      ],
+    }
+    : {};
+
+  const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
+  res.send(users);
+};
+
 // @desc    Register a new user
 // @route   POST /api/user/register
 // @access  Public
@@ -205,4 +222,5 @@ module.exports = {
   forgotPassword,
   verifyOtp,
   resetPassword,
+  allUsers,
 };

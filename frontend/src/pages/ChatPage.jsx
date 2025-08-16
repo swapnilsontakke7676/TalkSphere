@@ -1,123 +1,126 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useChat } from '../context/ChatContext';
+import { fetchChats, fetchMessages, sendMessage as sendMessageAPI } from '../services/api';
+import { useSocket } from '../context/SocketContext';
+import { toast } from 'react-toastify';
 import "../styles/chat.css";
 
-// Import the new ProfilePage component
-import ProfilePage from './ProfilePage';
-import SettingsPage from './SettingsPage';
 import ChatList from '../components/ChatList';
 import ChatBox from '../components/ChatBox';
+import SideDrawer from '../components/SideDrawer';
 import NavBar from '../components/NavBar';
+import SettingsPage from './SettingsPage'; // Assuming these are used
+import ProfilePage from './ProfilePage'; // Assuming these are used
 
 const ChatPage = () => {
-    // Manage the current view ('chats', 'settings', or 'profile')
+    const { user } = useAuth();
+    const { selectedChat, setSelectedChat, chats, setChats } = useChat(); // Use context state
+    
+    const [messages, setMessages] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [messageInput, setMessageInput] = useState('');
+    const [isDrawerOpen, setDrawerOpen] = useState(false);
     const [currentView, setCurrentView] = useState('chats');
 
-    // Add state for the current user's profile information
-    const [currentUser] = useState({
-        name: 'Rushikesh Nimbhore',
-        about: 'Hey there! I am using WhatsApp.'
-        // avatar will be handled by the ProfilePage component for now
-    });
+    const socket = useSocket();
 
-    const [selectedChat, setSelectedChat] = useState(null);
-    const [messageInput, setMessageInput] = useState('');
+    // 1. Fetch all chats for the logged-in user
+    useEffect(() => {
+        const getChats = async () => {
+            try {
+                const { data } = await fetchChats();
+                setChats(data);
+            } catch (error) {
+                toast.error("Failed to load chats");
+            }
+        };
+        getChats();
+    }, [setChats]);
 
-    const [chats] = useState({
-        user1: { name: 'John Doe', avatar: 'JD', status: 'Online', preview: 'Hey, how are you doing?', time: '2m' },
-        user2: { name: 'Sarah Miller', avatar: 'SM', status: 'last seen today at 1:25 PM', preview: 'Thanks for your help!', time: '5m' },
-        user3: { name: 'Mike Johnson', avatar: 'MJ', status: 'Offline', preview: 'See you tomorrow', time: '1h' }
-    });
+    // 2. Fetch messages when a chat is selected
+    useEffect(() => {
+        if (!selectedChat) return;
 
-    const [messages, setMessages] = useState({
-        user1: [
-            { id: 1, sender: 'JD', content: 'Hey, how are you doing?', sent: false },
-            { id: 2, sender: 'ME', content: "I'm doing great, thanks for asking!", sent: true }
-        ],
-        user2: [
-            { id: 1, sender: 'SM', content: 'Thanks for your help!', sent: false },
-            { id: 2, sender: 'ME', content: 'Anytime! Happy to help.', sent: true }
-        ],
-        user3: [
-            { id: 1, sender: 'MJ', content: 'See you tomorrow', sent: false }
-        ]
-    });
+        const getMessages = async () => {
+            setLoading(true);
+            try {
+                const { data } = await fetchMessages(selectedChat._id);
+                setMessages(data);
+                setLoading(false);
+                socket.emit("join chat", selectedChat._id);
+            } catch (error) {
+                toast.error("Failed to load messages");
+                setLoading(false);
+            }
+        };
+        getMessages();
+    }, [selectedChat, socket]);
+    
+    // 3. Listen for incoming messages
+    useEffect(() => {
+        if (!socket) return;
 
-    const { logout } = useAuth();
+        const messageReceivedHandler = (newMessage) => {
+            if (!selectedChat || selectedChat._id !== newMessage.chat._id) {
+                // Handle notification for other chats
+            } else {
+                setMessages((prev) => [...prev, newMessage]);
+            }
+        };
 
-    const handleLogout = () => {
-        if (window.confirm('Are you sure you want to logout?')) logout();
+        socket.on("message received", messageReceivedHandler);
+
+        return () => {
+            socket.off("message received", messageReceivedHandler);
+        };
+    }, [socket, selectedChat]);
+
+    // 4. Send a message
+    const sendMessage = async (e) => {
+        e.preventDefault();
+        if (!messageInput.trim()) return;
+
+        try {
+            const { data } = await sendMessageAPI({
+                content: messageInput,
+                chatId: selectedChat._id,
+            });
+            socket.emit("new message", data);
+            setMessages([...messages, data]);
+            setMessageInput('');
+        } catch (error) {
+            toast.error("Failed to send message");
+        }
     };
-
-    const selectChat = (chatId) => setSelectedChat(chatId);
+    
+    // Helper functions
+    const toggleDrawer = () => setDrawerOpen(!isDrawerOpen);
     const handleBack = () => setSelectedChat(null);
-    const startNewChat = () => alert('New chat!');
     const handleNavigate = (view) => setCurrentView(view);
 
-    const sendMessage = (e) => {
-        e.preventDefault();
-        if (!messageInput.trim() || !selectedChat) return;
-        const newMessage = {
-            id: Date.now(),
-            sender: 'ME',
-            content: messageInput,
-            sent: true
-        };
-        setMessages(prev => ({
-            ...prev,
-            [selectedChat]: [...(prev[selectedChat] || []), newMessage]
-        }));
-        setMessageInput('');
-    };
-
-    const currentChat = selectedChat ? chats[selectedChat] : null;
-    const currentMessages = selectedChat ? messages[selectedChat] || [] : [];
-
     return (
-        <div className="chat-container" >
-            <NavBar
-                currentView={currentView}
-                onNavigate={handleNavigate}
-            />
+        <div className="chat-container">
+            <NavBar currentView={currentView} onNavigate={handleNavigate} />
+            <SideDrawer isOpen={isDrawerOpen} onClose={toggleDrawer} />
 
-            {/* Conditionally render the chat layout */}
-            {
-                currentView === 'chats' && (
+            {currentView === 'chats' && (
                     <div className={`chat-layout ${selectedChat ? 'view-chat' : ''}`}>
-                        <ChatList
-                            chats={chats}
-                            selectedChat={selectedChat}
-                            selectChat={selectChat}
-                            startNewChat={startNewChat}
-                        />
+                    <ChatList startNewChat={toggleDrawer} />
                         <ChatBox
-                            currentChat={currentChat}
-                            currentMessages={currentMessages}
+                        currentChat={selectedChat}
+                        currentMessages={messages}
                             messageInput={messageInput}
                             setMessageInput={setMessageInput}
                             sendMessage={sendMessage}
                             handleBack={handleBack}
+                        loading={loading}
                         />
                     </div>
                 )}
 
-            {/* Conditionally render the settings page */}
-            {
-                currentView === 'settings' && (
-                    <SettingsPage onLogout={handleLogout} />
-                )
-            }
-
-            {/* --- ADD THIS BLOCK --- */}
-            {/* Conditionally render the new profile page */}
-            {
-                currentView === 'profile' && (
-                    <ProfilePage
-                        user={currentUser}
-                        onBack={() => handleNavigate('chats')
-                        }
-                    />
-                )}
+            {currentView === 'settings' && <SettingsPage />}
+            {currentView === 'profile' && <ProfilePage user={user} onBack={() => handleNavigate('chats')} />}
         </div>
     );
 };

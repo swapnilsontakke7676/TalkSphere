@@ -1,17 +1,20 @@
-// frontend/src/index.js
+// frontend/src/main.jsx
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css'; // For Tailwind
+import './index.css';
 import App from './App';
 import { AuthProvider } from './context/AuthContext';
 import { BrowserRouter } from 'react-router-dom';
+import { ChatProvider } from './context/ChatContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <App />
+        <ChatProvider>
+          <App />
+        </ChatProvider>
       </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>

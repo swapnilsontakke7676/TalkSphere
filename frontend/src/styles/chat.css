@@ -432,6 +432,61 @@ body {
     background-color: var(--bg-tertiary);
 }
 
+/* Individual Message Styling */
+.message {
+    display: flex;
+    max-width: 70%;
+    margin-bottom: 0.75rem;
+}
+
+.message.sent {
+    align-self: flex-end;
+    /* Aligns sent messages to the right */
+}
+
+.message.received {
+    align-self: flex-start;
+    /* Aligns received messages to the left */
+}
+
+.message-content {
+    padding: 0.6rem 1rem;
+    border-radius: 18px;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.message.sent .message-content {
+    background-color: var(--bg-message-sent);
+    color: var(--text-on-brand);
+    border-bottom-right-radius: 4px;
+    /* Creates the "tail" effect */
+}
+
+.message.received .message-content {
+    background-color: var(--bg-message-received);
+    color: var(--text-primary);
+    border-bottom-left-radius: 4px;
+    /* Creates the "tail" effect */
+}
+
+.message-content .sender-name {
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-bottom: 0.2rem;
+    color: var(--brand-primary);
+}
+
+.message-content .timestamp {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    text-align: right;
+    margin-top: 0.3rem;
+    display: block;
+    opacity: 0.8;
+}
+
 @media (max-width: 768px) {
 
     .main-nav {
