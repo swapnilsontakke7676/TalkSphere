@@ -67,81 +67,12 @@ body {
     width: 100%;
 }
 
-.main-nav {
-    width: 80px;
-    background-color: var(--bg-tertiary);
-    border-right: 1px solid var(--border-primary);
-    padding: 1rem 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 100vh;
-}
-
-.nav-logo {
-    color: var(--brand-primary);
-    margin-bottom: 2rem;
-}
-
-.nav-list {
-    list-style: none;
-    width: 100%;
-    flex: 1;
-}
-
-.nav-item,
-.theme-toggle {
-    display: flex;
-    width: 100%;
-    padding: 0.85rem 0;
-    border-left: 4px solid transparent;
-    color: var(--text-secondary);
-    transition: background-color 0.2s ease, color 0.2s ease;
-
-    background: none;
-    border-top: none;
-    border-right: none;
-    border-bottom: none;
-    cursor: pointer;
-    text-decoration: none;
-    border-radius: 0;
-}
-
-.nav-item:hover,
-.theme-toggle:hover {
-    color: var(--text-primary);
-    background-color: var(--bg-brand-secondary);
-}
-
-.nav-item.active {
-    color: var(--brand-primary);
-    border-left-color: var(--brand-primary);
-}
-
-.nav-item {
-    flex-direction: column;
-    align-items: center;
-    margin: 0.25rem 0;
-}
-
-.nav-item span {
-    font-size: 0.75rem;
-    margin-top: 0.25rem;
-}
-
-
 .theme-toggle {
     justify-content: center;
     align-items: center;
 }
 
-.nav-footer {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-}
+
 
 .chat-list {
     width: 380px;
