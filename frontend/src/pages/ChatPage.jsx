@@ -1,3 +1,4 @@
+// frontend/src/pages/ChatPage.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useChat } from '../context/ChatContext';
@@ -8,7 +9,6 @@ import "../styles/chat.css";
 
 import ChatList from '../components/ChatList';
 import ChatBox from '../components/ChatBox';
-import SideDrawer from '../components/SideDrawer';
 
 const ChatPage = () => {
     const { user, logout } = useAuth();
@@ -18,7 +18,6 @@ const ChatPage = () => {
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
     const [messageInput, setMessageInput] = useState('');
-    const [isDrawerOpen, setDrawerOpen] = useState(false);
 
     const socket = useSocket();
 
@@ -37,31 +36,22 @@ const ChatPage = () => {
 
     const handleTyping = (e) => {
         setMessageInput(e.target.value);
-
         if (!socket) return;
-
         socket.emit('typing', selectedChat._id);
-
         if (typingTimeout) clearTimeout(typingTimeout);
-
         const timer = setTimeout(() => {
             socket.emit('stop typing', selectedChat._id);
-        }, 3000); // 3 seconds
-
+        }, 3000);
         setTypingTimeout(timer);
     };
 
-    // 1. Fetch all chats for the logged-in user and join rooms
     useEffect(() => {
         if (socket) {
             const getChats = async () => {
                 try {
                     const { data } = await fetchChats();
                     setChats(data);
-                    // Join a socket room for each chat
-                    data.forEach(chat => {
-                        socket.emit("join chat", chat._id);
-                    });
+                    data.forEach(chat => socket.emit("join chat", chat._id));
                 } catch (error) {
                     toast.error("Failed to load chats");
                 }
@@ -70,57 +60,45 @@ const ChatPage = () => {
         }
     }, [setChats, socket]);
 
-    // 2. Fetch messages when a chat is selected
     useEffect(() => {
         if (!selectedChat) return;
-
         const getMessages = async () => {
             setLoading(true);
             try {
                 const { data } = await fetchMessages(selectedChat._id);
                 setMessages(data);
-                setLoading(false);
             } catch (error) {
                 toast.error("Failed to load messages");
+            } finally {
                 setLoading(false);
             }
         };
         getMessages();
     }, [selectedChat]);
 
-    // 3. Listen for incoming messages
     useEffect(() => {
         if (!socket) return;
-
         const messageReceivedHandler = (newMessage) => {
             setChats((prevChats) =>
-                prevChats.map((chat) => {
-                    if (chat._id === newMessage.chat._id) {
-                        return { ...chat, latestMessage: newMessage };
-                    }
-                    return chat;
-                })
+                prevChats.map((chat) =>
+                    chat._id === newMessage.chat._id ? { ...chat, latestMessage: newMessage } : chat
+                )
             );
-
             if (selectedChatRef.current && selectedChatRef.current._id === newMessage.chat._id) {
                 setMessages((prevMessages) => [...prevMessages, newMessage]);
             } else {
-                toast.info(`New message in ${newMessage.chat.isGroupChat ? newMessage.chat.chatName : newMessage.sender.name}`);
+                if (newMessage.sender._id !== user._id) {
+                    toast.info(`New message in ${newMessage.chat.isGroupChat ? newMessage.chat.chatName : newMessage.sender.name}`);
+                }
             }
         };
-
         socket.on("message received", messageReceivedHandler);
+        return () => socket.off("message received", messageReceivedHandler);
+    }, [socket, setChats, user._id]);
 
-        return () => {
-            socket.off("message received", messageReceivedHandler);
-        };
-    }, [socket, setChats]);
-
-    // 4. Send a message
     const sendMessage = async (e) => {
         e.preventDefault();
         if (!messageInput.trim()) return;
-
         try {
             const { data } = await sendMessageAPI({
                 content: messageInput,
@@ -129,22 +107,16 @@ const ChatPage = () => {
             socket.emit("new message", data);
             setMessages([...messages, data]);
             setChats(
-                chats.map((chat) => {
-                    if (chat._id === selectedChat._id) {
-                        return { ...chat, latestMessage: data };
-                    }
-                    return chat;
-                })
+                chats.map((chat) =>
+                    chat._id === selectedChat._id ? { ...chat, latestMessage: data } : chat
+                )
             );
-
             setMessageInput('');
         } catch (error) {
             toast.error("Failed to send message");
         }
     };
 
-    // Helper functions
-    const toggleDrawer = () => setDrawerOpen(!isDrawerOpen);
     const handleBack = () => setSelectedChat(null);
 
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -157,10 +129,8 @@ const ChatPage = () => {
 
     return (
         <>
-            <SideDrawer isOpen={isDrawerOpen} onClose={toggleDrawer} />
-
             <div className={`chat-layout ${selectedChat ? 'view-chat' : ''}`}>
-                <ChatList startNewChat={toggleDrawer} />
+                <ChatList />
                 <ChatBox
                     currentChat={selectedChat}
                     currentMessages={messages}
@@ -173,7 +143,6 @@ const ChatPage = () => {
                     handleTyping={handleTyping}
                 />
             </div>
-
             {showLogoutConfirm && (
                 <div className="logout-confirm-overlay">
                     <div className="logout-confirm-modal">

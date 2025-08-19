@@ -1,7 +1,5 @@
-// frontend/src/components/UserListItem.jsx
-
 import React from 'react';
-import '../styles/UserListItem.css'; // We will create this file next
+import '../styles/UserListItem.css';
 
 const UserListItem = ({ user, handleFunction }) => {
     return (
@@ -15,4 +13,5 @@ const UserListItem = ({ user, handleFunction }) => {
     );
 };
 
-export default UserListItem;
+// Wrap the component with React.memo
+export default React.memo(UserListItem);

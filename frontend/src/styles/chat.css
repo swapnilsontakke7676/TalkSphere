@@ -436,17 +436,34 @@ body {
     color: var(--text-primary);
 }
 
-.chat-search .search-button {
-    width: 100%;
-    text-align: left;
-    padding: 0.75rem 1rem;
-    border-radius: 2rem;
-    border: none;
+.chat-search-bar {
+    display: flex;
+    align-items: center;
     background-color: var(--bg-tertiary);
+    border-radius: 2rem;
+    padding: 0 1rem;
+    cursor: text;
+}
+
+.search-icon {
     color: var(--text-secondary);
+    font-size: 1.2rem;
+}
+
+.search-input-placeholder {
+    width: 100%;
+    padding: 0.65rem 0.5rem;
+    border: none;
+    background-color: transparent;
     font-size: 0.95rem;
+    outline: none;
+    color: var(--text-secondary);
     cursor: pointer;
-    transition: background-color 0.2s ease;
+}
+
+.chat-search .search-button {
+    display: none;
+    /* Hide the old button if it's still there */
 }
 
 .chat-search .search-button:hover {
