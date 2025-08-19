@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import ScrollableChat from './ScrollableChat';
 import ProfileModal from './ProfileModal';
@@ -8,6 +8,13 @@ const ChatBox = ({ currentChat, currentMessages, messageInput, setMessageInput, 
     const { user } = useAuth();
     const [isProfileModalOpen, setProfileModalOpen] = useState(false);
     const [isGroupModalOpen, setGroupModalOpen] = useState(false);
+    const chatMessagesRef = useRef(null);
+
+    useEffect(() => {
+        if (chatMessagesRef.current) {
+            chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
+        }
+    }, [currentMessages, isTyping]);
 
     // This helper function gets the full user object of the other person in the chat
     const getSender = (loggedUser, users) => {
@@ -55,7 +62,7 @@ const ChatBox = ({ currentChat, currentMessages, messageInput, setMessageInput, 
                     </div>
                 </div>
 
-                <div className="chat-messages">
+                <div className="chat-messages" ref={chatMessagesRef}>
                     {loading ? <p>Loading messages...</p> : <ScrollableChat messages={currentMessages} />}
                     {isTyping ? <div className="typing-indicator">Typing...</div> : <></>}
                 </div>

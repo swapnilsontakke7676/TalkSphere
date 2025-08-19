@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useChat } from '../context/ChatContext';
 import { fetchChats, fetchMessages, sendMessage as sendMessageAPI } from '../services/api';
@@ -9,12 +9,11 @@ import "../styles/chat.css";
 import ChatList from '../components/ChatList';
 import ChatBox from '../components/ChatBox';
 import SideDrawer from '../components/SideDrawer';
-// NavBar is no longer needed here
-// SettingsPage and ProfilePage are no longer needed here
 
 const ChatPage = () => {
     const { user, logout } = useAuth();
     const { selectedChat, setSelectedChat, chats, setChats } = useChat();
+    const selectedChatRef = useRef(selectedChat);
 
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -25,6 +24,10 @@ const ChatPage = () => {
 
     const [isTyping, setIsTyping] = useState(false);
     const [typingTimeout, setTypingTimeout] = useState(null);
+
+    useEffect(() => {
+        selectedChatRef.current = selectedChat;
+    }, [selectedChat]);
 
     useEffect(() => {
         if (!socket) return;
@@ -48,18 +51,24 @@ const ChatPage = () => {
         setTypingTimeout(timer);
     };
 
-    // 1. Fetch all chats for the logged-in user
+    // 1. Fetch all chats for the logged-in user and join rooms
     useEffect(() => {
-        const getChats = async () => {
-            try {
-                const { data } = await fetchChats();
-                setChats(data);
-            } catch (error) {
-                toast.error("Failed to load chats");
-            }
-        };
-        getChats();
-    }, [setChats]);
+        if (socket) {
+            const getChats = async () => {
+                try {
+                    const { data } = await fetchChats();
+                    setChats(data);
+                    // Join a socket room for each chat
+                    data.forEach(chat => {
+                        socket.emit("join chat", chat._id);
+                    });
+                } catch (error) {
+                    toast.error("Failed to load chats");
+                }
+            };
+            getChats();
+        }
+    }, [setChats, socket]);
 
     // 2. Fetch messages when a chat is selected
     useEffect(() => {
@@ -71,21 +80,19 @@ const ChatPage = () => {
                 const { data } = await fetchMessages(selectedChat._id);
                 setMessages(data);
                 setLoading(false);
-                socket.emit("join chat", selectedChat._id);
             } catch (error) {
                 toast.error("Failed to load messages");
                 setLoading(false);
             }
         };
         getMessages();
-    }, [selectedChat, socket]);
+    }, [selectedChat]);
 
     // 3. Listen for incoming messages
     useEffect(() => {
         if (!socket) return;
 
         const messageReceivedHandler = (newMessage) => {
-            // Update the main chats list
             setChats((prevChats) =>
                 prevChats.map((chat) => {
                     if (chat._id === newMessage.chat._id) {
@@ -95,11 +102,9 @@ const ChatPage = () => {
                 })
             );
 
-            // Update messages if the chat is currently open
-            if (selectedChat && selectedChat._id === newMessage.chat._id) {
+            if (selectedChatRef.current && selectedChatRef.current._id === newMessage.chat._id) {
                 setMessages((prevMessages) => [...prevMessages, newMessage]);
             } else {
-                // Optional: You can add a notification here for messages in other chats
                 toast.info(`New message in ${newMessage.chat.isGroupChat ? newMessage.chat.chatName : newMessage.sender.name}`);
             }
         };
@@ -109,7 +114,7 @@ const ChatPage = () => {
         return () => {
             socket.off("message received", messageReceivedHandler);
         };
-    }, [socket, selectedChat, setChats]);
+    }, [socket, setChats]);
 
     // 4. Send a message
     const sendMessage = async (e) => {
@@ -141,11 +146,7 @@ const ChatPage = () => {
     // Helper functions
     const toggleDrawer = () => setDrawerOpen(!isDrawerOpen);
     const handleBack = () => setSelectedChat(null);
-    const handleNavigate = (view, section = null) => {
-        setCurrentView({ view, section });
-    };
 
-    // Logout confirmation logic remains the same
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
     const handleLogoutClick = () => setShowLogoutConfirm(true);
     const handleLogoutConfirm = () => {
