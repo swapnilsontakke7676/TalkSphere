@@ -1,3 +1,4 @@
+/* frontend/src/styles/chat.css */
 * {
     margin: 0;
     padding: 0;
@@ -21,7 +22,6 @@
     --avatar-bg: #37436b;
     --avatar-text: #d2e3fc;
     --welcome-icon-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 24 24' fill='none' stroke='%233c4043' stroke-width='1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'%3E%3C/path%3E%3C/svg%3E");
-    --settings-icon-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 24 24' fill='none' stroke='%233c4043' stroke-width='1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 8v8m4-4H8'%3E%3C/path%3E%3C/svg%3E");
 }
 
 body.dark-mode {
@@ -71,8 +71,6 @@ body {
     justify-content: center;
     align-items: center;
 }
-
-
 
 .chat-list {
     width: 380px;
@@ -144,6 +142,8 @@ body {
     color: var(--avatar-text);
     font-weight: 500;
     font-size: 1.2rem;
+    flex-shrink: 0;
+    /* Prevents the avatar from shrinking */
 }
 
 .chat-info {
@@ -160,11 +160,16 @@ body {
 .chat-name {
     font-weight: 500;
     color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .chat-time {
     font-size: 0.75rem;
     color: var(--text-secondary);
+    flex-shrink: 0;
+    /* Prevents the time from shrinking */
 }
 
 .chat-preview {
@@ -205,6 +210,8 @@ body {
     display: flex;
     flex-direction: column;
     background-color: var(--bg-secondary);
+    min-width: 0;
+    /* Important for flexbox to prevent overflow */
 }
 
 .chat-header {
@@ -221,6 +228,9 @@ body {
     font-size: 1rem;
     font-weight: 500;
     color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .chat-header-info p {
@@ -263,6 +273,8 @@ body {
     border-radius: 18px;
     font-size: 0.95rem;
     line-height: 1.4;
+    word-break: break-all;
+    /* This is the key change */
 }
 
 .message:not(.sent) .message-content {
@@ -298,6 +310,8 @@ body {
     background-color: var(--bg-tertiary);
     outline: none;
     color: var(--text-primary);
+    min-width: 0;
+    /* Prevents input from overflowing */
 }
 
 .chat-input:focus {
@@ -317,6 +331,8 @@ body {
     align-items: center;
     justify-content: center;
     transition: background-color 0.2s ease;
+    flex-shrink: 0;
+    /* Prevents button from shrinking */
 }
 
 .send-btn:hover {
@@ -363,45 +379,6 @@ body {
     background-color: var(--bg-tertiary);
 }
 
-/* Individual Message Styling */
-.message {
-    display: flex;
-    max-width: 70%;
-    margin-bottom: 0.75rem;
-}
-
-.message.sent {
-    align-self: flex-end;
-    /* Aligns sent messages to the right */
-}
-
-.message.received {
-    align-self: flex-start;
-    /* Aligns received messages to the left */
-}
-
-.message-content {
-    padding: 0.6rem 1rem;
-    border-radius: 18px;
-    font-size: 0.95rem;
-    line-height: 1.4;
-    word-wrap: break-word;
-}
-
-.message.sent .message-content {
-    background-color: var(--bg-message-sent);
-    color: var(--text-on-brand);
-    border-bottom-right-radius: 4px;
-    /* Creates the "tail" effect */
-}
-
-.message.received .message-content {
-    background-color: var(--bg-message-received);
-    color: var(--text-primary);
-    border-bottom-left-radius: 4px;
-    /* Creates the "tail" effect */
-}
-
 .message-content .sender-name {
     font-size: 0.75rem;
     font-weight: 500;
@@ -418,32 +395,24 @@ body {
     opacity: 0.8;
 }
 
-/* Custom Scrollbar for Webkit Browsers (Chrome, Safari) */
 .chat-messages::-webkit-scrollbar {
     width: 8px;
-    /* Width of the scrollbar */
 }
 
 .chat-messages::-webkit-scrollbar-track {
     background: var(--bg-secondary);
-    /* Track color */
 }
 
 .chat-messages::-webkit-scrollbar-thumb {
     background-color: var(--bg-tertiary);
-    /* Handle color */
     border-radius: 10px;
-    /* Rounded corners */
     border: 2px solid var(--bg-secondary);
-    /* Creates a margin around the handle */
 }
 
 .chat-messages::-webkit-scrollbar-thumb:hover {
     background-color: var(--border-primary);
-    /* Handle color on hover */
 }
 
-/* Add these styles for ChatList */
 .chat-list-header.with-button {
     display: flex;
     justify-content: space-between;
@@ -484,8 +453,6 @@ body {
     background-color: var(--border-primary);
 }
 
-
-/* This is the new clickable wrapper for the avatar and name */
 .chat-header-clickable {
     display: flex;
     align-items: center;
@@ -495,19 +462,18 @@ body {
     border-radius: 8px;
     transition: background-color 0.2s ease;
     flex-grow: 1;
-    /* Allows it to take up the remaining space */
+    min-width: 0;
+    /* Important for flexbox to prevent overflow */
 }
 
 .chat-header-clickable:hover {
     background-color: var(--bg-tertiary);
 }
 
-/* Hide the old container with the eye icon */
 .chat-header-actions {
     display: none;
 }
 
-/* Logout Confirmation Modal */
 .logout-confirm-overlay {
     position: fixed;
     top: 0;
@@ -519,7 +485,6 @@ body {
     align-items: center;
     justify-content: center;
     z-index: 2000;
-    /* Ensure it's on top of other content */
 }
 
 .logout-confirm-modal {
@@ -552,7 +517,6 @@ body {
 
 .logout-confirm-modal button:first-of-type {
     background-color: #e04f5f;
-    /* A red color for confirmation */
     color: white;
 }
 
@@ -573,7 +537,6 @@ body {
     transform: scale(0.98);
 }
 
-/* Typing Indicator */
 .typing-indicator {
     margin: 0.5rem 2rem;
     font-style: italic;
@@ -582,7 +545,6 @@ body {
 }
 
 @media (max-width: 768px) {
-
     .main-nav {
         width: 65px;
     }
