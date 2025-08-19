@@ -27,8 +27,7 @@ const NavBar = () => {
             < span > Chats </span>
           </div>
         </li>
-        <li>
-          {/* This now navigates to settings and is active on the /settings route */}
+        {/* <li>
           <div
             className={`nav-item ${location.pathname === '/settings' ? 'active' : ''}`}
             onClick={() => navigate('/settings')}
@@ -36,7 +35,7 @@ const NavBar = () => {
             <IoPersonCircleSharp size={24} />
             < span > Profile </span>
           </div>
-        </li>
+        </li> */}
         {
           user && user.role === 'admin' && (
             <li>
