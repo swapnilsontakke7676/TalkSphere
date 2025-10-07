@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { loginUser } from "../services/api";
+import { googleLoginUser, loginUser } from "../services/api";
 import { toast } from "react-toastify";
+import { jwtDecode } from "jwt-decode";
+import axios from "axios";
+import { GoogleLogin } from "@react-oauth/google";
 import "../styles/login.css"; // Assuming you have a CSS file for styles
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -41,6 +45,45 @@ const LoginPage = () => {
     }
   };
 
+  const handleGoogleLogin = async ({ email, sub }) => {
+    try {
+      setLoading(true);
+
+      const res = await googleLoginUser({
+        email,
+        googleId: sub,
+      });
+
+      const { token, user } = res.data;
+
+      // ✅ Save to localStorage
+      localStorage.setItem("token", token);
+      localStorage.setItem("userEmail", user.email);
+      localStorage.setItem("userRole", user.role);
+      localStorage.setItem("userId", user._id);
+      localStorage.setItem("profileImage", user.profileImage || "");
+
+      // ✅ Save to context
+      setToken(token);
+      setEmail(user.email);
+
+      if (onLoginSuccess) {
+        onLoginSuccess(token, user.email, user.role, user._id);
+      }
+
+      toast.success("Google login successful!");
+
+      setTimeout(() => {
+        navigate(user.role === "admin" ? "/admin/upload" : "/");
+      }, 1500);
+    } catch (err) {
+      toast.error(
+        "Google login failed: " + (err.response?.data?.message || err.message)
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="min-h-screen">
       <div className="login-container">
@@ -131,6 +174,26 @@ const LoginPage = () => {
             <NavLink to="/register" className="signup-link">
               Sign up
             </NavLink>
+          </div>
+
+          <div style={{ textAlign: "center" }}>
+            <GoogleLogin
+              onSuccess={(credentialResponse) => {
+                const token = credentialResponse?.credential;
+                if (!token) {
+                  toast.error("Google credential missing");
+                  return;
+                }
+
+                const decoded = jwtDecode(token);
+                const { email, sub } = decoded;
+
+                handleGoogleLogin({ email, sub });
+              }}
+              onError={() => {
+                toast.error("Google Sign In Failed");
+              }}
+            />
           </div>
         </form>
       </div>

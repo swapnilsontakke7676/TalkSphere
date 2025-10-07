@@ -2,6 +2,7 @@ const User = require("../models/userModel");
 const Chat = require("../models/chatModel"); // Import Chat model
 const generateToken = require("../config/generateToken");
 const nodemailer = require("nodemailer");
+const jwt = require("jsonwebtoken");
 
 // Fetch all users
 // GET /api/user
@@ -9,11 +10,11 @@ const nodemailer = require("nodemailer");
 const allUsers = async (req, res) => {
   const keyword = req.query.search
     ? {
-      $or: [
-        { name: { $regex: req.query.search, $options: "i" } },
-        { email: { $regex: req.query.search, $options: "i" } },
-      ],
-    }
+        $or: [
+          { name: { $regex: req.query.search, $options: "i" } },
+          { email: { $regex: req.query.search, $options: "i" } },
+        ],
+      }
     : {};
 
   const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
@@ -93,6 +94,52 @@ const loginUser = async (req, res) => {
   }
 };
 
+// POST /api/auth/google-login
+const googleLoginUser = async (req, res) => {
+  try {
+    console.log("Google login request body:", req.body); // 👀 log incoming data
+    const { email, googleId } = req.body;
+
+    if (!email || !googleId) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    let user = await User.findOne({ email });
+    if (!user) {
+      user = new User({
+        email,
+        password: googleId,
+        authType: "google",
+        isVerified: true,
+      });
+      await user.save();
+    }
+
+    if (!process.env.JWT_SECRET) {
+      throw new Error("JWT_SECRET not configured");
+    }
+
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    res.json({
+      token,
+      user: {
+        _id: user._id,
+        email: user.email,
+        role: user.role,
+        profileImage: user.profileImage,
+      },
+    });
+  } catch (err) {
+    console.error("Google login failed:", err);
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
+  }
+};
+
 // POST /forgot-password
 const forgotPassword = async (req, res) => {
   try {
@@ -100,10 +147,13 @@ const forgotPassword = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(404).json({ message: "User with that email does not exist." });
+      return res
+        .status(404)
+        .json({ message: "User with that email does not exist." });
     }
 
-    const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
+    const generateOTP = () =>
+      Math.floor(100000 + Math.random() * 900000).toString();
 
     const otp = generateOTP();
     user.resetOTP = otp;
@@ -147,7 +197,9 @@ const forgotPassword = async (req, res) => {
               <img src="https://placehold.co/150x50/4A90E2/FFFFFF?text=TalkSphere" alt="TalkSphere Logo"/>
             </div>
             <h1>Your Password Reset Code</h1>
-            <p>Hello <strong>${user.username || user.name || "there"}</strong>,</p>
+            <p>Hello <strong>${
+              user.username || user.name || "there"
+            }</strong>,</p>
             <p>We received a request to reset your password. Use the OTP below to proceed:</p>
             <div class="otp-section">
               <span class="otp-code">${otp}</span>
@@ -170,11 +222,14 @@ const forgotPassword = async (req, res) => {
       html: htmlTemplate,
     });
 
-    res.status(200).json({ message: "OTP has been sent to your email address." });
-
+    res
+      .status(200)
+      .json({ message: "OTP has been sent to your email address." });
   } catch (error) {
     console.error("Forgot Password Error:", error);
-    res.status(500).json({ message: error.message || "An internal server error occurred." });
+    res
+      .status(500)
+      .json({ message: error.message || "An internal server error occurred." });
   }
 };
 
@@ -182,7 +237,8 @@ const forgotPassword = async (req, res) => {
 const verifyOtp = async (req, res) => {
   try {
     const { email, otp } = req.body;
-    if (!email || !otp) return res.status(400).json({ message: "Email and OTP are required" });
+    if (!email || !otp)
+      return res.status(400).json({ message: "Email and OTP are required" });
 
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ message: "User not found" });
@@ -208,8 +264,10 @@ const resetPassword = async (req, res) => {
   const user = await User.findOne({ email });
 
   if (!user) return res.status(404).json({ message: "User not found" });
-  if (user.resetOTP !== otp) return res.status(400).json({ message: "Invalid OTP" });
-  if (user.resetOTPExpires < Date.now()) return res.status(400).json({ message: "OTP expired" });
+  if (user.resetOTP !== otp)
+    return res.status(400).json({ message: "Invalid OTP" });
+  if (user.resetOTPExpires < Date.now())
+    return res.status(400).json({ message: "OTP expired" });
 
   user.password = newPassword;
   user.resetOTP = undefined;
@@ -273,9 +331,9 @@ const deleteUser = async (req, res) => {
 
   if (user) {
     await user.deleteOne(); // Corrected line
-    res.json({ message: 'User removed' });
+    res.json({ message: "User removed" });
   } else {
-    res.status(404).json({ message: 'User not found' });
+    res.status(404).json({ message: "User not found" });
   }
 };
 
@@ -296,10 +354,9 @@ const updateUserRole = async (req, res) => {
       role: updatedUser.role,
     });
   } else {
-    res.status(404).json({ message: 'User not found' });
+    res.status(404).json({ message: "User not found" });
   }
 };
-
 
 // @desc    Get Admin Stats
 // @route   GET /api/user/admin/stats
@@ -325,6 +382,7 @@ const getUsers = async (req, res) => {
 module.exports = {
   registerUser,
   loginUser,
+  googleLoginUser,
   forgotPassword,
   verifyOtp,
   resetPassword,
